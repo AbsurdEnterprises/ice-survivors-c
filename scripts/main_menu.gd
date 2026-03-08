@@ -12,23 +12,21 @@ var selected_stage := "stage_01"
 @onready var play_button: Button = $Panel/PlayButton
 
 func _ready() -> void:
+	# Connect play button FIRST so it always works even if build functions fail
+	play_button.pressed.connect(_on_play)
+
 	meta = MetaProgression.new()
 	meta.load_data()
-	_build_ui()
 
-func _build_ui() -> void:
 	title_label.text = "ICE SURVIVORS"
 	gold_label.text = "Gold: %d" % meta.total_gold
+	play_button.text = "START RUN"
 
 	_build_character_select()
 	_build_stage_select()
 	_build_upgrade_shop()
 
-	play_button.text = "START RUN"
-	play_button.pressed.connect(_on_play)
-
 func _build_character_select() -> void:
-	# Clear existing
 	for child in char_container.get_children():
 		child.queue_free()
 
@@ -39,7 +37,7 @@ func _build_character_select() -> void:
 	for char_id in CharacterData.CHARACTERS:
 		if char_id not in meta.unlocked_characters:
 			continue
-		var data := CharacterData.get_character(char_id)
+		var data: Dictionary = CharacterData.CHARACTERS[char_id]
 		var btn := Button.new()
 		btn.custom_minimum_size = Vector2(200, 40)
 		var base: Dictionary = data["base_stats"]
@@ -85,7 +83,7 @@ func _build_upgrade_shop() -> void:
 	upgrade_container.add_child(header)
 
 	for uid in MetaProgression.META_UPGRADES:
-		var data := MetaProgression.META_UPGRADES[uid]
+		var data: Dictionary = MetaProgression.META_UPGRADES[uid]
 		var level: int = meta.upgrade_levels.get(uid, 0)
 		var max_level: int = data["max_level"]
 		var btn := Button.new()
@@ -95,7 +93,7 @@ func _build_upgrade_shop() -> void:
 			btn.text = "%s LV %d/%d (MAX)" % [data["stat"], level, max_level]
 			btn.disabled = true
 		else:
-			var cost := meta.get_upgrade_cost(uid)
+			var cost: int = meta.get_upgrade_cost(uid)
 			btn.text = "%s LV %d/%d - Cost: %d gold" % [data["stat"], level, max_level, cost]
 			btn.disabled = not meta.can_purchase(uid)
 			btn.pressed.connect(_on_upgrade_purchased.bind(uid))
@@ -116,13 +114,6 @@ func _on_upgrade_purchased(uid: String) -> void:
 		_build_upgrade_shop()
 
 func _on_play() -> void:
-	# Store selected character and stage for the game scene to read
-	var game_config := {
-		"character": selected_character,
-		"stage": selected_stage,
-		"meta_upgrades": meta.get_applied_stats(),
-	}
-	# Use a global autoload or pass via scene change
 	GameConfig.character_id = selected_character
 	GameConfig.stage_id = selected_stage
 	GameConfig.meta_stats = meta.get_applied_stats()
