@@ -65,7 +65,7 @@ func _physics_process(delta: float) -> void:
 
 	# Check pickup
 	var dist := global_position.distance_to(player.global_position)
-	var pickup_radius := player.xp_radius
+	var pickup_radius = player.xp_radius
 
 	if dist < pickup_radius:
 		if not is_magnetized:

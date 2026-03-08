@@ -91,12 +91,12 @@ func _drop_loot() -> void:
 
 func _screen_nuke() -> void:
 	# Destroy all non-boss enemies on screen
-	var cam_pos := game_manager.camera.global_position
+	var cam_pos = game_manager.camera.global_position
 	var vp_half := Vector2(640, 360)
-	var enemies := game_manager.enemy_pool.get_active_enemies()
+	var enemies = game_manager.enemy_pool.get_active_enemies()
 	for enemy in enemies:
 		if not enemy.is_boss and enemy.is_active:
-			var dist := enemy.global_position - cam_pos
+			var dist = enemy.global_position - cam_pos
 			if abs(dist.x) < vp_half.x and abs(dist.y) < vp_half.y:
 				enemy.take_damage(99999.0)
 
@@ -106,6 +106,6 @@ func _screen_nuke() -> void:
 	flash.size = Vector2(1280, 720)
 	flash.position = Vector2.ZERO
 	game_manager.hud.add_child(flash)
-	var tween := game_manager.create_tween()
+	var tween = game_manager.create_tween()
 	tween.tween_property(flash, "modulate:a", 0.0, 0.1)
 	tween.tween_callback(flash.queue_free)

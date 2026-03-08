@@ -8,11 +8,11 @@ func _load_weapon_data() -> void:
 func fire() -> void:
 	var sweep_range := 80.0 * get_area_mult()
 	var sweep_width := 60.0 * get_area_mult()
-	var dir := player.facing
+	var dir = player.facing
 	var center := player.global_position + dir * sweep_range * 0.5
 
 	# Query enemies in sweep area
-	var enemies := collision_manager.query_radius(center, sweep_range, "enemy")
+	var enemies = collision_manager.query_radius(center, sweep_range, "enemy")
 	var dmg := get_damage()
 	var kb := get_knockback()
 

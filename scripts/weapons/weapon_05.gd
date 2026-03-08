@@ -12,7 +12,7 @@ func fire() -> void:
 	var dmg := get_damage()
 	var kb := get_knockback()
 
-	var enemies := collision_manager.query_radius(player.global_position, aura_radius, "enemy")
+	var enemies = collision_manager.query_radius(player.global_position, aura_radius, "enemy")
 	for enemy in enemies:
 		if not is_instance_valid(enemy) or not enemy.has_method("take_damage"):
 			continue

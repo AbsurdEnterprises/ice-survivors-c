@@ -235,7 +235,7 @@ func _recalculate_passive_stats() -> void:
 
 	for pid in passives:
 		var plevel: int = passive_levels.get(pid, 0)
-		var pdata := WeaponData.PASSIVES[pid]
+		var pdata = WeaponData.PASSIVES[pid]
 		var total_bonus: float = pdata["bonus_per_level"] * plevel
 		match pdata["stat"]:
 			"max_hp":
@@ -271,7 +271,7 @@ func _recalculate_passive_stats() -> void:
 		current_hp = max_hp
 
 func evolve_weapon(evo_id: String) -> void:
-	var evo := WeaponData.EVOLUTIONS[evo_id]
+	var evo = WeaponData.EVOLUTIONS[evo_id]
 	var old_weapon: String = evo["replaces"]
 	var idx := weapons.find(old_weapon)
 	if idx >= 0:

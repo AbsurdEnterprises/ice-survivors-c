@@ -17,7 +17,7 @@ func show_selection(player: CharacterBody2D) -> void:
 	visible = true
 	_clear_options()
 
-	var num_options := 4 if player.current_level > 1 else 3
+	var num_options = 4 if player.current_level > 1 else 3
 	var options := _generate_options(player, num_options)
 	current_options = options
 
@@ -53,7 +53,7 @@ func _generate_options(player: CharacterBody2D, count: int) -> Array[String]:
 	for weapon_id in WeaponData.WEAPONS:
 		if weapon_id not in player.weapons:
 			if player.weapons.size() < 6:
-				var weight := 10.0 + player.luck * 2.0
+				var weight = 10.0 + player.luck * 2.0
 				candidates.append({"id": weapon_id, "weight": weight})
 		else:
 			# Upgrade existing weapon
@@ -66,7 +66,7 @@ func _generate_options(player: CharacterBody2D, count: int) -> Array[String]:
 	for passive_id in WeaponData.PASSIVES:
 		if passive_id not in player.passives:
 			if player.passives.size() < 6:
-				var weight := 10.0 + player.luck * 2.0
+				var weight = 10.0 + player.luck * 2.0
 				# Rare items
 				if passive_id in ["passive_05", "passive_06"]:
 					weight = 5.0 + player.luck * 3.0
@@ -101,14 +101,14 @@ func _generate_options(player: CharacterBody2D, count: int) -> Array[String]:
 
 func _get_item_description(item_id: String, player: CharacterBody2D) -> String:
 	if item_id.begins_with("weapon_"):
-		var data := WeaponData.WEAPONS[item_id]
+		var data = WeaponData.WEAPONS[item_id]
 		var lvl: int = player.weapon_levels.get(item_id, 0)
 		if lvl > 0:
 			return "[LV %d→%d] %s: %s" % [lvl, lvl + 1, item_id, data["description"]]
 		else:
 			return "[NEW] %s: %s" % [item_id, data["description"]]
 	elif item_id.begins_with("passive_"):
-		var data := WeaponData.PASSIVES[item_id]
+		var data = WeaponData.PASSIVES[item_id]
 		var lvl: int = player.passive_levels.get(item_id, 0)
 		if lvl > 0:
 			return "[LV %d→%d] %s: %s" % [lvl, lvl + 1, item_id, data["description"]]

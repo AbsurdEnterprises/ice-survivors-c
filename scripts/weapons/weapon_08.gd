@@ -11,7 +11,7 @@ func fire() -> void:
 
 	for i in count:
 		# Find a random enemy to strike
-		var enemies := collision_manager.query_radius(player.global_position, 600.0, "enemy")
+		var enemies = collision_manager.query_radius(player.global_position, 600.0, "enemy")
 		if enemies.is_empty():
 			return
 
@@ -24,7 +24,7 @@ func fire() -> void:
 		var kb := get_knockback()
 
 		# Deal AoE damage at strike location
-		var hit_enemies := collision_manager.query_radius(strike_pos, strike_radius, "enemy")
+		var hit_enemies = collision_manager.query_radius(strike_pos, strike_radius, "enemy")
 		for enemy in hit_enemies:
 			if is_instance_valid(enemy) and enemy.has_method("take_damage"):
 				var kb_dir := (enemy.global_position - strike_pos).normalized()

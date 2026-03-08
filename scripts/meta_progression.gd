@@ -19,12 +19,12 @@ func _ready() -> void:
 	load_data()
 
 func get_upgrade_cost(upgrade_id: String) -> int:
-	var data := META_UPGRADES[upgrade_id]
+	var data = META_UPGRADES[upgrade_id]
 	var current_level: int = upgrade_levels.get(upgrade_id, 0)
 	return int(data["base_cost"] * (1.5 * (current_level + 1)))
 
 func can_purchase(upgrade_id: String) -> bool:
-	var data := META_UPGRADES[upgrade_id]
+	var data = META_UPGRADES[upgrade_id]
 	var current_level: int = upgrade_levels.get(upgrade_id, 0)
 	return current_level < data["max_level"] and total_gold >= get_upgrade_cost(upgrade_id)
 
@@ -42,7 +42,7 @@ func get_applied_stats() -> Dictionary:
 	for uid in META_UPGRADES:
 		var level: int = upgrade_levels.get(uid, 0)
 		if level > 0:
-			var data := META_UPGRADES[uid]
+			var data = META_UPGRADES[uid]
 			stats[data["stat"]] = data["bonus_per_level"] * level
 	return stats
 

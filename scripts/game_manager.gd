@@ -319,7 +319,7 @@ func _on_chest_opened(p: CharacterBody2D) -> void:
 func _get_eligible_evolutions() -> Array[String]:
 	var eligible: Array[String] = []
 	for evo_id in WeaponData.EVOLUTIONS:
-		var evo := WeaponData.EVOLUTIONS[evo_id]
+		var evo = WeaponData.EVOLUTIONS[evo_id]
 		var req_weapon: String = evo["requires_weapon"]
 		var req_passive = evo["requires_passive"]
 
@@ -348,7 +348,7 @@ func _get_eligible_evolutions() -> Array[String]:
 	return eligible
 
 func _apply_evolution(evo_id: String) -> void:
-	var evo := WeaponData.EVOLUTIONS[evo_id]
+	var evo = WeaponData.EVOLUTIONS[evo_id]
 	var old_weapon: String = evo["replaces"]
 	weapon_system.remove_weapon(old_weapon)
 	player.evolve_weapon(evo_id)
@@ -362,7 +362,7 @@ func _show_evolution_selection(evolutions: Array[String]) -> void:
 	level_up_screen.current_options = evolutions
 	for i in evolutions.size():
 		var evo_id: String = evolutions[i]
-		var evo := WeaponData.EVOLUTIONS[evo_id]
+		var evo = WeaponData.EVOLUTIONS[evo_id]
 		var btn := Button.new()
 		btn.custom_minimum_size = Vector2(500, 60)
 		btn.text = "%s: %s" % [evo_id, evo["effect"]]
@@ -375,7 +375,7 @@ func on_gold_collected(amount: int) -> void:
 	player.gold += amount
 
 func spawn_enemy_projectile(from: Vector2, target: Vector2, dmg: float) -> void:
-	var proj := projectile_pool.get_projectile()
+	var proj = projectile_pool.get_projectile()
 	if not proj:
 		return
 	var dir := (target - from).normalized()
@@ -396,7 +396,7 @@ func spawn_enemy_projectile(from: Vector2, target: Vector2, dmg: float) -> void:
 func spawn_boss_drones(boss_pos: Vector2, count: int) -> void:
 	var time_minutes := get_elapsed_minutes()
 	for i in count:
-		var drone := enemy_pool.get_enemy()
+		var drone = enemy_pool.get_enemy()
 		if not drone:
 			return
 		var angle := randf() * TAU
@@ -412,7 +412,7 @@ func spawn_boss_drones(boss_pos: Vector2, count: int) -> void:
 		drone.enemy_died.connect(on_enemy_killed, CONNECT_ONE_SHOT)
 
 func spawn_boss_aoe(from: Vector2, target_pos: Vector2) -> void:
-	var proj := projectile_pool.get_projectile()
+	var proj = projectile_pool.get_projectile()
 	if not proj:
 		return
 	proj.activate({

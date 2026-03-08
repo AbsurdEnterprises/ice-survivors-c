@@ -120,7 +120,7 @@ func activate_boss(boss_data: Dictionary, player_ref: Node2D, time_minutes: floa
 	is_boss = true
 	boss_id = boss_data["boss_id"]
 
-	var bdata := EnemyData.BOSSES[boss_id]
+	var bdata = EnemyData.BOSSES[boss_id]
 	behavior = bdata["behavior"]
 	knockback_immune = true
 	contact_damage = bdata["contact_damage"]

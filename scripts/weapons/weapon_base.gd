@@ -65,7 +65,7 @@ func on_level_up() -> void:
 	pass  # Override for special level-up behavior
 
 func spawn_projectile(data: Dictionary) -> Area2D:
-	var proj := projectile_pool.get_projectile()
+	var proj = projectile_pool.get_projectile()
 	if not proj:
 		return null
 	data["collision_manager"] = collision_manager

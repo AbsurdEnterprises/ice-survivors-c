@@ -27,7 +27,7 @@ func update(delta: float) -> void:
 	var steps := int(beam_length / 32.0)
 	for i in steps:
 		var point := player.global_position + beam_dir * (32.0 * (i + 1))
-		var enemies := collision_manager.query_radius(point, beam_width, "enemy")
+		var enemies = collision_manager.query_radius(point, beam_width, "enemy")
 		for enemy in enemies:
 			if is_instance_valid(enemy) and enemy.has_method("apply_freeze"):
 				enemy.apply_freeze(freeze_duration)

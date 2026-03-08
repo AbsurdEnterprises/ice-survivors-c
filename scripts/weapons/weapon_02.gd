@@ -10,7 +10,7 @@ func fire() -> void:
 	var targets_hit := {}
 
 	for i in count:
-		var nearest := collision_manager.query_nearest(player.global_position, "enemy")
+		var nearest = collision_manager.query_nearest(player.global_position, "enemy")
 		if not nearest:
 			return
 
@@ -18,7 +18,7 @@ func fire() -> void:
 		var attempts := 0
 		while nearest and nearest.get_instance_id() in targets_hit and attempts < 10:
 			# Find another target
-			var enemies := collision_manager.query_radius(player.global_position, 800.0, "enemy")
+			var enemies = collision_manager.query_radius(player.global_position, 800.0, "enemy")
 			nearest = null
 			for e in enemies:
 				if e.get_instance_id() not in targets_hit:

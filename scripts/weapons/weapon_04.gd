@@ -11,7 +11,7 @@ func fire() -> void:
 	for i in count:
 		# Target nearest enemy or random position
 		var target_pos: Vector2
-		var nearest := collision_manager.query_nearest(player.global_position, "enemy", 600.0)
+		var nearest = collision_manager.query_nearest(player.global_position, "enemy", 600.0)
 		if nearest:
 			target_pos = nearest.global_position + Vector2(randf_range(-30, 30), randf_range(-30, 30))
 		else:

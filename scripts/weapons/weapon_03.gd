@@ -7,7 +7,7 @@ func _load_weapon_data() -> void:
 
 func fire() -> void:
 	var count := get_projectile_count()
-	var dir := player.facing
+	var dir = player.facing
 	if dir == Vector2.ZERO:
 		dir = Vector2.RIGHT
 

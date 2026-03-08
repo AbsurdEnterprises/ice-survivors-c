@@ -21,7 +21,7 @@ func update(delta: float) -> void:
 
 	# Ensure we have the right number of orbitals
 	while orbit_projectiles.size() < count:
-		var proj := projectile_pool.get_projectile()
+		var proj = projectile_pool.get_projectile()
 		if proj:
 			proj.activate({
 				"position": player.global_position,
@@ -50,10 +50,10 @@ func update(delta: float) -> void:
 		orbit_projectiles[i].global_position = pos
 
 		# Manual collision check for orbitals
-		var enemies := collision_manager.query_radius(pos, 20.0, "enemy")
+		var enemies = collision_manager.query_radius(pos, 20.0, "enemy")
 		for enemy in enemies:
 			if is_instance_valid(enemy) and enemy.has_method("take_damage"):
-				var eid := enemy.get_instance_id()
+				var eid = enemy.get_instance_id()
 				if eid not in orbit_projectiles[i].hit_enemies:
 					orbit_projectiles[i].hit_enemies[eid] = true
 					var kb_dir := (enemy.global_position - pos).normalized()

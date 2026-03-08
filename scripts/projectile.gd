@@ -175,7 +175,7 @@ func _process_pool(delta: float) -> void:
 		pool_damage_timer = 0.5
 		# Damage all enemies in radius
 		if collision_manager:
-			var enemies := collision_manager.query_radius(global_position, pool_radius, "enemy")
+			var enemies = collision_manager.query_radius(global_position, pool_radius, "enemy")
 			for enemy in enemies:
 				if is_instance_valid(enemy) and enemy.has_method("take_damage"):
 					enemy.take_damage(damage, Vector2.ZERO, 0)
@@ -195,7 +195,7 @@ func _check_collisions() -> void:
 
 	if is_enemy_projectile:
 		# Check against player
-		var players := collision_manager.query_radius(global_position, radius + 16.0, "player")
+		var players = collision_manager.query_radius(global_position, radius + 16.0, "player")
 		for p in players:
 			if is_instance_valid(p) and p.has_method("take_damage"):
 				p.take_damage(damage)
@@ -203,11 +203,11 @@ func _check_collisions() -> void:
 				return
 	else:
 		# Check against enemies
-		var enemies := collision_manager.query_radius(global_position, radius + 20.0, "enemy")
+		var enemies = collision_manager.query_radius(global_position, radius + 20.0, "enemy")
 		for enemy in enemies:
 			if not is_instance_valid(enemy):
 				continue
-			var eid := enemy.get_instance_id()
+			var eid = enemy.get_instance_id()
 			if eid in hit_enemies:
 				continue
 

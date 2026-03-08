@@ -33,7 +33,7 @@ func _physics_process(delta: float) -> void:
 	if not is_spawning:
 		return
 
-	var time_minutes := game_manager.get_elapsed_minutes()
+	var time_minutes = game_manager.get_elapsed_minutes()
 
 	# Handle surges
 	if surge_remaining > 0:
@@ -48,7 +48,7 @@ func _physics_process(delta: float) -> void:
 	if spawn_timer <= 0:
 		spawn_timer = spawn_interval
 		var count := _calculate_spawn_count(time_minutes)
-		var active := enemy_pool.get_active_count()
+		var active = enemy_pool.get_active_count()
 		var available := m_cap - active
 		count = mini(count, available)
 		for i in count:
@@ -62,7 +62,7 @@ func _spawn_enemy(time_minutes: float) -> void:
 	if enemy_pool.get_active_count() >= m_cap:
 		return
 
-	var enemy := enemy_pool.get_enemy()
+	var enemy = enemy_pool.get_enemy()
 	if not enemy:
 		return
 
@@ -84,7 +84,7 @@ func _spawn_enemy(time_minutes: float) -> void:
 	enemy.enemy_died.connect(game_manager.on_enemy_killed, CONNECT_ONE_SHOT)
 
 func _spawn_hazard(time_minutes: float) -> void:
-	var enemy := enemy_pool.get_enemy()
+	var enemy = enemy_pool.get_enemy()
 	if not enemy:
 		return
 
@@ -129,12 +129,12 @@ func trigger_surge(count: int) -> void:
 	surge_interval = 10.0 / float(count)
 
 func spawn_boss(boss_id: String) -> void:
-	var enemy := enemy_pool.get_enemy()
+	var enemy = enemy_pool.get_enemy()
 	if not enemy:
 		return
 
 	var spawn_pos := _get_spawn_position()
-	var time_minutes := game_manager.get_elapsed_minutes()
+	var time_minutes = game_manager.get_elapsed_minutes()
 
 	var boss_data := {
 		"boss_id": boss_id,

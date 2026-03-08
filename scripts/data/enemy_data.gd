@@ -65,16 +65,16 @@ static func get_enemy_class(id: String) -> Dictionary:
 	return ENEMY_CLASSES[id]
 
 static func get_health(id: String, time_minutes: float) -> float:
-	var data := ENEMY_CLASSES[id]
+	var data = ENEMY_CLASSES[id]
 	return data["h_base"] * (1.0 + time_minutes * 0.15) * data["c_mod"]
 
 static func get_speed(id: String, time_minutes: float) -> float:
-	var data := ENEMY_CLASSES[id]
+	var data = ENEMY_CLASSES[id]
 	var v_base: float = data["v_base"]
 	return v_base + (time_minutes * 0.02 * v_base)
 
 static func get_contact_damage(id: String, time_minutes: float) -> float:
-	var data := ENEMY_CLASSES[id]
+	var data = ENEMY_CLASSES[id]
 	return data["contact_damage"] * (1.0 + time_minutes * 0.08)
 
 static func get_boss_hp(boss_id: String, time_minutes: float, player_level: int = 1) -> float:
@@ -88,7 +88,7 @@ static func get_boss_hp(boss_id: String, time_minutes: float, player_level: int 
 	return 1000.0
 
 static func pick_enemy_class(time_minutes: float) -> String:
-	var comp := COMPOSITION[0]
+	var comp = COMPOSITION[0]
 	for c in COMPOSITION:
 		if time_minutes < c["time_max"]:
 			comp = c
