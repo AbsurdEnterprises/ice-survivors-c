@@ -27,7 +27,7 @@ func fire() -> void:
 			enemy.take_damage(dmg, kb_dir, kb)
 
 	# Visual sweep effect - spawn a short-lived projectile for visual
-	var proj = spawn_projectile({
+	spawn_projectile({
 		"position": center,
 		"direction": dir,
 		"speed": 0.0,

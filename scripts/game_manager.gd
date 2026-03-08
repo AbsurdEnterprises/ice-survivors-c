@@ -159,8 +159,8 @@ func _update_background() -> void:
 	var center_tile_y = int(floor(cam_pos.y / tile_size))
 
 	var needed_tiles = {}
-	for x in range(center_tile_x - tiles_x / 2, center_tile_x + tiles_x / 2 + 1):
-		for y in range(center_tile_y - tiles_y / 2, center_tile_y + tiles_y / 2 + 1):
+	for x in range(center_tile_x - int(tiles_x / 2.0), center_tile_x + int(tiles_x / 2.0) + 1):
+		for y in range(center_tile_y - int(tiles_y / 2.0), center_tile_y + int(tiles_y / 2.0) + 1):
 			var key = Vector2i(x, y)
 			needed_tiles[key] = true
 			if key not in active_tiles:
@@ -263,7 +263,7 @@ func _on_player_healed(current_hp: float, max_hp_val: float) -> void:
 func _on_xp_collected(current_xp: int, xp_needed: int, level: int) -> void:
 	hud.update_xp(current_xp, xp_needed, level)
 
-func _on_player_level_up(new_level: int) -> void:
+func _on_player_level_up(_new_level: int) -> void:
 	_change_state(GameState.LEVEL_UP)
 	level_up_screen.show_selection(player)
 
@@ -282,7 +282,7 @@ func on_enemy_killed(xp_value: int, enemy_position: Vector2) -> void:
 	if xp_value > 0:
 		xp_pool.spawn_gem(enemy_position, xp_value)
 
-func on_boss_killed(boss_id: String, boss_position: Vector2) -> void:
+func on_boss_killed(_boss_id: String, boss_position: Vector2) -> void:
 	kill_count += 1
 	xp_pool.spawn_gem(boss_position, 200)
 	camera.unlock()
@@ -411,7 +411,7 @@ func spawn_boss_drones(boss_pos: Vector2, count: int) -> void:
 		drone.current_hp = 30.0
 		drone.enemy_died.connect(on_enemy_killed, CONNECT_ONE_SHOT)
 
-func spawn_boss_aoe(from: Vector2, target_pos: Vector2) -> void:
+func spawn_boss_aoe(_from: Vector2, target_pos: Vector2) -> void:
 	var proj = projectile_pool.get_projectile()
 	if not proj:
 		return

@@ -146,7 +146,7 @@ func spawn_boss(boss_id: String) -> void:
 	enemy.activate_boss(boss_data, player, time_minutes, collision_manager)
 
 	# Connect boss death to boss-specific handler
-	enemy.enemy_died.connect(func(xp: int, pos: Vector2):
+	enemy.enemy_died.connect(func(_xp: int, pos: Vector2):
 		game_manager.on_boss_killed(boss_id, pos)
 	, CONNECT_ONE_SHOT)
 

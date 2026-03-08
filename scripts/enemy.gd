@@ -208,7 +208,7 @@ func _physics_process(delta: float) -> void:
 		if dist < my_size + 16.0:
 			target.take_damage(contact_damage)
 
-func _move_direct(delta: float) -> void:
+func _move_direct(_delta: float) -> void:
 	if not target or not is_instance_valid(target):
 		return
 	var dir = (target.global_position - global_position).normalized()
