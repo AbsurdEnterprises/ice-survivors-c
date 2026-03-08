@@ -62,10 +62,11 @@ var freeze_timer := 0.0
 func _ready() -> void:
 	set_physics_process(false)
 
-func activate(data: Dictionary, player_ref: Node2D, time_minutes: float, col_manager: Node) -> void:
+func activate(data: Dictionary, player_ref: Node2D, time_minutes: float, col_manager: Node, game_mgr: Node = null) -> void:
 	enemy_class = data.get("class_id", "fodder_01")
 	target = player_ref
 	collision_manager = col_manager
+	game_manager_ref = game_mgr
 
 	var class_data := EnemyData.get_enemy_class(enemy_class)
 	behavior = class_data["behavior"]
@@ -172,19 +173,14 @@ func _physics_process(delta: float) -> void:
 		else:
 			return
 
-	# Register in spatial hash
+	# Register in spatial hash (all enemies register as "enemy" for weapon targeting)
 	if collision_manager:
-		var type_str := "boss" if is_boss else "enemy"
-		collision_manager.register(self, type_str)
+		collision_manager.register(self, "enemy")
 
 	# Apply knockback
 	if knockback_velocity.length_squared() > 1.0:
 		global_position += knockback_velocity * delta
 		knockback_velocity = knockback_velocity.lerp(Vector2.ZERO, knockback_decay * delta)
-
-	# Register as "enemy" type too so weapons can target bosses
-	if collision_manager:
-		collision_manager.register(self, "enemy")
 
 	# Movement based on behavior
 	match behavior:
@@ -262,12 +258,10 @@ func _move_orbit(delta: float) -> void:
 		_fire_at_player()
 
 func _fire_at_player() -> void:
-	# Enemy projectile - handled by game manager
-	if not target:
+	if not target or not is_instance_valid(target):
 		return
-	var game := get_parent().get_parent()
-	if game.has_method("spawn_enemy_projectile"):
-		game.spawn_enemy_projectile(global_position, target.global_position, contact_damage)
+	if game_manager_ref and game_manager_ref.has_method("spawn_enemy_projectile"):
+		game_manager_ref.spawn_enemy_projectile(global_position, target.global_position, contact_damage)
 
 func _move_straight(delta: float) -> void:
 	velocity = hazard_direction * move_speed
@@ -285,9 +279,8 @@ func take_damage(amount: float, knockback_dir: Vector2 = Vector2.ZERO, knockback
 	tween.tween_property(visual, "modulate", Color.WHITE, 0.1)
 
 	# Show damage number
-	var game := get_parent().get_parent()
-	if game and game.has_method("show_damage_number"):
-		game.show_damage_number(global_position + Vector2(0, -20), amount)
+	if game_manager_ref and game_manager_ref.has_method("show_damage_number"):
+		game_manager_ref.show_damage_number(global_position + Vector2(0, -20), amount)
 
 	if knockback_force > 0 and not knockback_immune:
 		knockback_velocity += knockback_dir * knockback_force
@@ -317,6 +310,7 @@ func _boss_aoe_bombarder(delta: float) -> void:
 	bombard_timer -= delta
 	if bombard_timer <= 0:
 		bombard_timer = bombard_interval
-		# Fire AoE blast at player
+		if not target or not is_instance_valid(target):
+			return
 		if game_manager_ref and game_manager_ref.has_method("spawn_boss_aoe"):
 			game_manager_ref.spawn_boss_aoe(global_position, target.global_position)

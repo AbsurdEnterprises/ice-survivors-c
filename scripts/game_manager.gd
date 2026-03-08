@@ -405,7 +405,7 @@ func spawn_boss_drones(boss_pos: Vector2, count: int) -> void:
 			"class_id": "fodder_01",
 			"position": boss_pos + offset,
 		}
-		drone.activate(data, player, time_minutes, collision_manager)
+		drone.activate(data, player, time_minutes, collision_manager, self)
 		drone.move_speed = 200.0
 		drone.max_hp = 30.0
 		drone.current_hp = 30.0

@@ -11,7 +11,7 @@ func _ready() -> void:
 		var label := Label.new()
 		label.visible = false
 		label.z_index = 100
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.horizontal_alignment = 1  # CENTER
 		add_child(label)
 		pool.append(label)
 

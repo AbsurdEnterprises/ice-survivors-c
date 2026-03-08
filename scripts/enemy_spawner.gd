@@ -80,7 +80,7 @@ func _spawn_enemy(time_minutes: float) -> void:
 		"position": spawn_pos,
 	}
 
-	enemy.activate(data, player, time_minutes, collision_manager)
+	enemy.activate(data, player, time_minutes, collision_manager, game_manager)
 	enemy.enemy_died.connect(game_manager.on_enemy_killed, CONNECT_ONE_SHOT)
 
 func _spawn_hazard(time_minutes: float) -> void:
@@ -106,7 +106,7 @@ func _spawn_hazard(time_minutes: float) -> void:
 		"position": spawn_pos,
 		"direction": direction,
 	}
-	enemy.activate(data, player, time_minutes, collision_manager)
+	enemy.activate(data, player, time_minutes, collision_manager, game_manager)
 	enemy.enemy_died.connect(game_manager.on_enemy_killed, CONNECT_ONE_SHOT)
 
 func _get_spawn_position() -> Vector2:

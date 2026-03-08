@@ -102,6 +102,11 @@ func deactivate() -> void:
 	visible = false
 	set_physics_process(false)
 	global_position = Vector2(-9999, -9999)
+	hit_enemies.clear()
+	is_bouncing = false
+	is_arcing = false
+	is_pool = false
+	is_enemy_projectile = false
 
 func _physics_process(delta: float) -> void:
 	if not is_active:
