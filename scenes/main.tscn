@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bmain000001"]
+[gd_scene load_steps=10 format=3 uid="uid://bmain000001"]
 
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_game"]
 [ext_resource type="Script" path="res://scripts/camera.gd" id="2_camera"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://scripts/projectile_pool.gd" id="6_ppool"]
 [ext_resource type="Script" path="res://scripts/xp_pool.gd" id="7_xppool"]
 [ext_resource type="Script" path="res://scripts/weapon_system.gd" id="8_weapons"]
+[ext_resource type="Script" path="res://scripts/damage_numbers.gd" id="9_dmgnum"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_game")
@@ -37,6 +38,10 @@ script = ExtResource("7_xppool")
 
 [node name="WeaponSystem" type="Node" parent="."]
 script = ExtResource("8_weapons")
+
+[node name="DamageNumbers" type="Node2D" parent="."]
+z_index = 50
+script = ExtResource("9_dmgnum")
 
 [node name="HUD" parent="." instance="res://scenes/hud.tscn"]
 

@@ -28,6 +28,9 @@ var xp_pool: Node
 var chest_scene: PackedScene
 var active_chests := []
 
+# Damage numbers
+var damage_numbers: Node2D
+
 # Background tiles
 var bg_tiles: Node2D
 var tile_size := 256
@@ -71,6 +74,9 @@ func _setup_references() -> void:
 	xp_pool = $XPPool
 	bg_tiles = $Background
 
+	# Damage numbers
+	damage_numbers = $DamageNumbers
+
 	# Connect player signals
 	player.player_damaged.connect(_on_player_damaged)
 	player.player_died.connect(_on_player_died)
@@ -87,7 +93,9 @@ func _setup_references() -> void:
 	xp_pool.initialize(player)
 
 func _start_game() -> void:
-	player.initialize("char_02")
+	var char_id := GameConfig.character_id
+	var meta_stats := GameConfig.meta_stats
+	player.initialize(char_id, meta_stats)
 	elapsed_time = 0.0
 	kill_count = 0
 	gold_earned = 0
@@ -134,7 +142,11 @@ func _physics_process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_R and current_state == GameState.GAME_OVER:
+			get_tree().paused = false
 			get_tree().reload_current_scene()
+		elif event.keycode == KEY_M and current_state == GameState.GAME_OVER:
+			get_tree().paused = false
+			get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
 		elif event.keycode == KEY_ESCAPE:
 			if current_state == GameState.PLAYING:
 				_change_state(GameState.PAUSED)
@@ -240,6 +252,10 @@ func _on_player_damaged(current_hp: float, max_hp_val: float) -> void:
 func _on_player_died() -> void:
 	_change_state(GameState.GAME_OVER)
 	hud.show_game_over(elapsed_time, kill_count, gold_earned)
+	# Save gold earned this run
+	var meta := MetaProgression.new()
+	meta.load_data()
+	meta.add_gold(gold_earned)
 
 func _on_player_healed(current_hp: float, max_hp_val: float) -> void:
 	hud.update_hp(current_hp, max_hp_val)
@@ -415,6 +431,10 @@ func spawn_boss_aoe(from: Vector2, target_pos: Vector2) -> void:
 		"pool_duration": 4.0,
 		"pool_radius": 48.0,
 	})
+
+func show_damage_number(pos: Vector2, amount: float, is_crit: bool = false) -> void:
+	if damage_numbers:
+		damage_numbers.show_damage(pos, amount, is_crit)
 
 func get_elapsed_minutes() -> float:
 	return elapsed_time / 60.0

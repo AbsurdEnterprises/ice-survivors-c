@@ -102,10 +102,22 @@ func _update_xp_radius() -> void:
 		shape.radius = xp_radius
 		xp_pickup_shape.shape = shape
 
+func _draw() -> void:
+	# Draw aura ring if weapon_05 is active
+	if "weapon_05" in weapons:
+		var aura_radius := 80.0 * area_mult
+		draw_arc(Vector2.ZERO, aura_radius, 0, TAU, 32, Color(0.3, 0.5, 1.0, 0.3), 2.0)
+
+	# Draw freeze beam if weapon_10 is active
+	if "weapon_10" in weapons:
+		# The beam visual is handled by the weapon update
+		pass
+
 func _physics_process(delta: float) -> void:
 	_handle_movement()
 	_handle_invulnerability(delta)
 	_handle_regen(delta)
+	queue_redraw()
 
 func _handle_movement() -> void:
 	var input_dir := Vector2.ZERO

@@ -45,4 +45,4 @@ func show_game_over(elapsed: float, kills: int, gold: int) -> void:
 	game_over_panel.visible = true
 	var minutes := int(elapsed) / 60
 	var seconds := int(elapsed) % 60
-	game_over_label.text = "GAME OVER\n\nTime: %02d:%02d\nKills: %d\nGold: %d\n\nPress R to Restart" % [minutes, seconds, kills, gold]
+	game_over_label.text = "GAME OVER\n\nTime: %02d:%02d\nKills: %d\nGold earned: %d\n\nR - Restart | M - Main Menu" % [minutes, seconds, kills, gold]

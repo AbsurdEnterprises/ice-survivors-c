@@ -284,6 +284,11 @@ func take_damage(amount: float, knockback_dir: Vector2 = Vector2.ZERO, knockback
 	var tween := create_tween()
 	tween.tween_property(visual, "modulate", Color.WHITE, 0.1)
 
+	# Show damage number
+	var game := get_parent().get_parent()
+	if game and game.has_method("show_damage_number"):
+		game.show_damage_number(global_position + Vector2(0, -20), amount)
+
 	if knockback_force > 0 and not knockback_immune:
 		knockback_velocity += knockback_dir * knockback_force
 
