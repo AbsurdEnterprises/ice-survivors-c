@@ -1,6 +1,9 @@
 extends Control
 
-var meta: MetaProgression
+const MetaProgressionScript = preload("res://scripts/meta_progression.gd")
+const CharacterDataScript = preload("res://scripts/data/character_data.gd")
+
+var meta = null
 var selected_character := "char_02"
 var selected_stage := "stage_01"
 
@@ -12,11 +15,15 @@ var selected_stage := "stage_01"
 @onready var play_button: Button = $Panel/PlayButton
 
 func _ready() -> void:
-	# Connect play button FIRST so it always works even if build functions fail
-	play_button.pressed.connect(_on_play)
+	print("[MainMenu] _ready() called")
 
-	meta = MetaProgression.new()
+	# Connect play button FIRST
+	play_button.pressed.connect(_on_play)
+	print("[MainMenu] Play button connected")
+
+	meta = MetaProgressionScript.new()
 	meta.load_data()
+	print("[MainMenu] Meta loaded, gold: ", meta.total_gold)
 
 	title_label.text = "ICE SURVIVORS"
 	gold_label.text = "Gold: %d" % meta.total_gold
@@ -25,6 +32,7 @@ func _ready() -> void:
 	_build_character_select()
 	_build_stage_select()
 	_build_upgrade_shop()
+	print("[MainMenu] UI build complete")
 
 func _build_character_select() -> void:
 	for child in char_container.get_children():
@@ -34,10 +42,13 @@ func _build_character_select() -> void:
 	header.text = "SELECT CHARACTER"
 	char_container.add_child(header)
 
-	for char_id in CharacterData.CHARACTERS:
+	var characters: Dictionary = CharacterDataScript.CHARACTERS
+	print("[MainMenu] Building character select, characters: ", characters.keys())
+
+	for char_id in characters:
 		if char_id not in meta.unlocked_characters:
 			continue
-		var data: Dictionary = CharacterData.CHARACTERS[char_id]
+		var data: Dictionary = characters[char_id]
 		var btn := Button.new()
 		btn.custom_minimum_size = Vector2(200, 40)
 		var base: Dictionary = data["base_stats"]
@@ -82,8 +93,9 @@ func _build_upgrade_shop() -> void:
 	header.text = "UPGRADES"
 	upgrade_container.add_child(header)
 
-	for uid in MetaProgression.META_UPGRADES:
-		var data: Dictionary = MetaProgression.META_UPGRADES[uid]
+	var upgrades: Dictionary = MetaProgressionScript.META_UPGRADES
+	for uid in upgrades:
+		var data: Dictionary = upgrades[uid]
 		var level: int = meta.upgrade_levels.get(uid, 0)
 		var max_level: int = data["max_level"]
 		var btn := Button.new()
@@ -114,7 +126,9 @@ func _on_upgrade_purchased(uid: String) -> void:
 		_build_upgrade_shop()
 
 func _on_play() -> void:
+	print("[MainMenu] START RUN pressed!")
 	GameConfig.character_id = selected_character
 	GameConfig.stage_id = selected_stage
 	GameConfig.meta_stats = meta.get_applied_stats()
+	print("[MainMenu] Changing to main scene...")
 	get_tree().change_scene_to_file("res://scenes/main.tscn")
