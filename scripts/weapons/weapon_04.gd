@@ -6,7 +6,7 @@ func _load_weapon_data() -> void:
 	super._load_weapon_data()
 
 func fire() -> void:
-	var count := get_projectile_count()
+	var count = get_projectile_count()
 
 	for i in count:
 		# Target nearest enemy or random position
@@ -15,11 +15,11 @@ func fire() -> void:
 		if nearest:
 			target_pos = nearest.global_position + Vector2(randf_range(-30, 30), randf_range(-30, 30))
 		else:
-			var angle := randf() * TAU
+			var angle = randf() * TAU
 			target_pos = player.global_position + Vector2(cos(angle), sin(angle)) * randf_range(100, 300)
 
-		var dir := (target_pos - player.global_position).normalized()
-		var dist := player.global_position.distance_to(target_pos)
+		var dir = (target_pos - player.global_position).normalized()
+		var dist = player.global_position.distance_to(target_pos)
 
 		spawn_projectile({
 			"position": player.global_position,

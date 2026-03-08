@@ -6,8 +6,8 @@ func _load_weapon_data() -> void:
 	super._load_weapon_data()
 
 func fire() -> void:
-	var count := get_projectile_count()
-	var targets_hit := {}
+	var count = get_projectile_count()
+	var targets_hit = {}
 
 	for i in count:
 		var nearest = collision_manager.query_nearest(player.global_position, "enemy")
@@ -15,7 +15,7 @@ func fire() -> void:
 			return
 
 		# Skip already targeted enemies this volley
-		var attempts := 0
+		var attempts = 0
 		while nearest and nearest.get_instance_id() in targets_hit and attempts < 10:
 			# Find another target
 			var enemies = collision_manager.query_radius(player.global_position, 800.0, "enemy")
@@ -30,7 +30,7 @@ func fire() -> void:
 			return
 
 		targets_hit[nearest.get_instance_id()] = true
-		var dir := (nearest.global_position - player.global_position).normalized()
+		var dir = (nearest.global_position - player.global_position).normalized()
 
 		spawn_projectile({
 			"position": player.global_position,

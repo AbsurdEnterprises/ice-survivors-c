@@ -1,9 +1,9 @@
 extends Node
 
-const POOL_SIZE := 500
+const POOL_SIZE = 500
 
 var pool: Array[CharacterBody2D] = []
-var active_count := 0
+var active_count = 0
 var enemy_scene: PackedScene
 
 func _ready() -> void:
@@ -12,7 +12,7 @@ func _ready() -> void:
 
 func _initialize_pool() -> void:
 	for i in POOL_SIZE:
-		var enemy := enemy_scene.instantiate() as CharacterBody2D
+		var enemy = enemy_scene.instantiate() as CharacterBody2D
 		enemy.deactivate()
 		add_child(enemy)
 		pool.append(enemy)
@@ -25,7 +25,7 @@ func get_enemy() -> CharacterBody2D:
 
 	# Pool exhausted - expand if under hard cap
 	if pool.size() < 2000:
-		var enemy := enemy_scene.instantiate() as CharacterBody2D
+		var enemy = enemy_scene.instantiate() as CharacterBody2D
 		enemy.deactivate()
 		add_child(enemy)
 		pool.append(enemy)
@@ -40,7 +40,7 @@ func return_enemy(enemy: CharacterBody2D) -> void:
 		active_count -= 1
 
 func get_active_enemies() -> Array:
-	var result := []
+	var result = []
 	for enemy in pool:
 		if enemy.is_active:
 			result.append(enemy)

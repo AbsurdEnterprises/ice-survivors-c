@@ -1,7 +1,7 @@
 extends Node
 class_name EnemyData
 
-const ENEMY_CLASSES := {
+const ENEMY_CLASSES = {
 	"fodder_01": {
 		"name": "Bureaucrat", "h_base": 10, "c_mod": 0.8, "v_base": 40.0,
 		"behavior": "direct", "contact_damage": 5, "xp_value": 1,
@@ -35,7 +35,7 @@ const ENEMY_CLASSES := {
 }
 
 # Enemy class composition by time bracket (probabilities)
-const COMPOSITION := [
+const COMPOSITION = [
 	{"time_max": 3.0, "fodder_01": 1.0, "erratic_02": 0.0, "tank_03": 0.0, "ranged_04": 0.0, "hazard_05": 0.0},
 	{"time_max": 7.0, "fodder_01": 0.60, "erratic_02": 0.35, "tank_03": 0.0, "ranged_04": 0.05, "hazard_05": 0.0},
 	{"time_max": 12.0, "fodder_01": 0.40, "erratic_02": 0.30, "tank_03": 0.15, "ranged_04": 0.10, "hazard_05": 0.05},
@@ -43,7 +43,7 @@ const COMPOSITION := [
 	{"time_max": 30.0, "fodder_01": 0.15, "erratic_02": 0.20, "tank_03": 0.30, "ranged_04": 0.20, "hazard_05": 0.15},
 ]
 
-const BOSSES := {
+const BOSSES = {
 	"boss_01": {
 		"spawn_time_minutes": 10, "speed": 60, "behavior": "drone_deployer",
 		"contact_damage": 25, "drops": "treasure_chest",
@@ -95,8 +95,8 @@ static func pick_enemy_class(time_minutes: float) -> String:
 			break
 		comp = c
 
-	var roll := randf()
-	var cumulative := 0.0
+	var roll = randf()
+	var cumulative = 0.0
 	for key in ["fodder_01", "erratic_02", "tank_03", "ranged_04", "hazard_05"]:
 		cumulative += comp[key]
 		if roll <= cumulative:

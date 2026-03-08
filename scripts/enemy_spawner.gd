@@ -1,18 +1,18 @@
 extends Node
 
-const B_S := 8.0
-const GROWTH_RATE := 0.12
-const BASE_M_CAP := 500
+const B_S = 8.0
+const GROWTH_RATE = 0.12
+const BASE_M_CAP = 500
 
-var spawn_timer := 0.0
-var spawn_interval := 1.0  # seconds between spawn cycles
-var is_spawning := true
-var m_cap := BASE_M_CAP
+var spawn_timer = 0.0
+var spawn_interval = 1.0  # seconds between spawn cycles
+var is_spawning = true
+var m_cap = BASE_M_CAP
 
 # Surge state
-var surge_remaining := 0
-var surge_timer := 0.0
-var surge_interval := 0.25  # spawn surge enemies over 10 seconds
+var surge_remaining = 0
+var surge_timer = 0.0
+var surge_interval = 0.25  # spawn surge enemies over 10 seconds
 
 var player: CharacterBody2D
 var enemy_pool: Node
@@ -47,15 +47,15 @@ func _physics_process(delta: float) -> void:
 	spawn_timer -= delta
 	if spawn_timer <= 0:
 		spawn_timer = spawn_interval
-		var count := _calculate_spawn_count(time_minutes)
+		var count = _calculate_spawn_count(time_minutes)
 		var active = enemy_pool.get_active_count()
-		var available := m_cap - active
+		var available = m_cap - active
 		count = mini(count, available)
 		for i in count:
 			_spawn_enemy(time_minutes)
 
 func _calculate_spawn_count(t: float) -> int:
-	var n := B_S * pow(1.0 + GROWTH_RATE, t)
+	var n = B_S * pow(1.0 + GROWTH_RATE, t)
 	return mini(int(floor(n)), m_cap)
 
 func _spawn_enemy(time_minutes: float) -> void:
@@ -66,7 +66,7 @@ func _spawn_enemy(time_minutes: float) -> void:
 	if not enemy:
 		return
 
-	var enemy_class := EnemyData.pick_enemy_class(time_minutes)
+	var enemy_class = EnemyData.pick_enemy_class(time_minutes)
 
 	# Don't pool hazard_05 through normal path - they're one-shot
 	if enemy_class == "hazard_05":
@@ -74,8 +74,8 @@ func _spawn_enemy(time_minutes: float) -> void:
 		enemy_pool.return_enemy(enemy)
 		return
 
-	var spawn_pos := _get_spawn_position()
-	var data := {
+	var spawn_pos = _get_spawn_position()
+	var data = {
 		"class_id": enemy_class,
 		"position": spawn_pos,
 	}
@@ -89,8 +89,8 @@ func _spawn_hazard(time_minutes: float) -> void:
 		return
 
 	# Spawn from left or right edge
-	var from_left := randf() > 0.5
-	var y_pos := player.global_position.y + randf_range(-200, 200)
+	var from_left = randf() > 0.5
+	var y_pos = player.global_position.y + randf_range(-200, 200)
 	var spawn_pos: Vector2
 	var direction: Vector2
 
@@ -101,7 +101,7 @@ func _spawn_hazard(time_minutes: float) -> void:
 		spawn_pos = Vector2(player.global_position.x + 800, y_pos)
 		direction = Vector2.LEFT
 
-	var data := {
+	var data = {
 		"class_id": "hazard_05",
 		"position": spawn_pos,
 		"direction": direction,
@@ -113,13 +113,13 @@ func _get_spawn_position() -> Vector2:
 	if not player:
 		return Vector2.ZERO
 
-	var viewport_size := Vector2(1280, 720)
-	var hw := viewport_size.x / 2.0 + 64.0
-	var hh := viewport_size.y / 2.0 + 64.0
+	var viewport_size = Vector2(1280, 720)
+	var hw = viewport_size.x / 2.0 + 64.0
+	var hh = viewport_size.y / 2.0 + 64.0
 
-	var angle := randf() * TAU
-	var spawn_x := player.global_position.x + hw * cos(angle)
-	var spawn_y := player.global_position.y + hh * sin(angle)
+	var angle = randf() * TAU
+	var spawn_x = player.global_position.x + hw * cos(angle)
+	var spawn_y = player.global_position.y + hh * sin(angle)
 	return Vector2(spawn_x, spawn_y)
 
 func trigger_surge(count: int) -> void:
@@ -133,10 +133,10 @@ func spawn_boss(boss_id: String) -> void:
 	if not enemy:
 		return
 
-	var spawn_pos := _get_spawn_position()
+	var spawn_pos = _get_spawn_position()
 	var time_minutes = game_manager.get_elapsed_minutes()
 
-	var boss_data := {
+	var boss_data = {
 		"boss_id": boss_id,
 		"position": spawn_pos,
 		"player_level": game_manager.player.current_level,

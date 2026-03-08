@@ -27,8 +27,8 @@ func update_xp(current: int, needed: int, level: int) -> void:
 	level_label.text = "LV %d" % level
 
 func update_timer(elapsed_seconds: float) -> void:
-	var minutes := int(elapsed_seconds) / 60
-	var seconds := int(elapsed_seconds) % 60
+	var minutes = int(elapsed_seconds) / 60
+	var seconds = int(elapsed_seconds) % 60
 	timer_label.text = "%02d:%02d" % [minutes, seconds]
 
 func update_kills(count: int) -> void:
@@ -43,6 +43,6 @@ func update_boss_hp(current: float, maximum: float) -> void:
 
 func show_game_over(elapsed: float, kills: int, gold: int) -> void:
 	game_over_panel.visible = true
-	var minutes := int(elapsed) / 60
-	var seconds := int(elapsed) % 60
+	var minutes = int(elapsed) / 60
+	var seconds = int(elapsed) % 60
 	game_over_label.text = "GAME OVER\n\nTime: %02d:%02d\nKills: %d\nGold earned: %d\n\nR - Restart | M - Main Menu" % [minutes, seconds, kills, gold]

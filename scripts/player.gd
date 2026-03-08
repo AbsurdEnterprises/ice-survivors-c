@@ -7,49 +7,49 @@ signal xp_collected(current_xp: int, xp_needed: int, level: int)
 signal level_up(new_level: int)
 
 # Character data
-var character_id := "char_02"
-var stat_modifiers := {}
+var character_id = "char_02"
+var stat_modifiers = {}
 
 # Base stats (after character modifiers)
-var max_hp := 100.0
-var current_hp := 100.0
-var move_speed := 150.0
-var xp_radius := 64.0
-var armor := 0.0
-var luck := 0.0
-var damage_mult := 1.0
-var area_mult := 1.0
-var cooldown_reduction := 0.0
-var projectile_speed_mult := 1.0
-var hp_regen := 0.0
-var effect_duration_mult := 1.0
-var damage_bonus := 0.0
+var max_hp = 100.0
+var current_hp = 100.0
+var move_speed = 150.0
+var xp_radius = 64.0
+var armor = 0.0
+var luck = 0.0
+var damage_mult = 1.0
+var area_mult = 1.0
+var cooldown_reduction = 0.0
+var projectile_speed_mult = 1.0
+var hp_regen = 0.0
+var effect_duration_mult = 1.0
+var damage_bonus = 0.0
 
 # XP and leveling
-var current_xp := 0
-var current_level := 1
+var current_xp = 0
+var current_level = 1
 
 # Inventory
 var weapons: Array[String] = []
-var weapon_levels := {}
+var weapon_levels = {}
 var passives: Array[String] = []
-var passive_levels := {}
+var passive_levels = {}
 
 # I-frames
-var is_invulnerable := false
-var invulnerable_timer := 0.0
-const INVULNERABLE_DURATION := 0.5
-var blink_timer := 0.0
+var is_invulnerable = false
+var invulnerable_timer = 0.0
+const INVULNERABLE_DURATION = 0.5
+var blink_timer = 0.0
 
 # Facing direction (for directional weapons)
-var facing := Vector2.RIGHT
+var facing = Vector2.RIGHT
 
 # Gold
-var gold := 0
+var gold = 0
 
 # Meta revive
-var has_revive := false
-var revive_used := false
+var has_revive = false
+var revive_used = false
 
 # Node references
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
@@ -67,7 +67,7 @@ func initialize(char_id: String, meta_upgrades: Dictionary = {}) -> void:
 	current_hp = max_hp
 
 func _apply_character_data() -> void:
-	var data := CharacterData.get_character(character_id)
+	var data = CharacterData.get_character(character_id)
 	var base: Dictionary = data["base_stats"]
 	stat_modifiers = data["stat_modifiers"]
 
@@ -98,14 +98,14 @@ func _apply_meta_upgrades(meta: Dictionary) -> void:
 
 func _update_xp_radius() -> void:
 	if xp_pickup_shape:
-		var shape := CircleShape2D.new()
+		var shape = CircleShape2D.new()
 		shape.radius = xp_radius
 		xp_pickup_shape.shape = shape
 
 func _draw() -> void:
 	# Draw aura ring if weapon_05 is active
 	if "weapon_05" in weapons:
-		var aura_radius := 80.0 * area_mult
+		var aura_radius = 80.0 * area_mult
 		draw_arc(Vector2.ZERO, aura_radius, 0, TAU, 32, Color(0.3, 0.5, 1.0, 0.3), 2.0)
 
 	# Draw freeze beam if weapon_10 is active
@@ -120,7 +120,7 @@ func _physics_process(delta: float) -> void:
 	queue_redraw()
 
 func _handle_movement() -> void:
-	var input_dir := Vector2.ZERO
+	var input_dir = Vector2.ZERO
 	input_dir.x = Input.get_axis("move_left", "move_right")
 	input_dir.y = Input.get_axis("move_up", "move_down")
 
@@ -155,7 +155,7 @@ func take_damage(amount: float) -> void:
 	if is_invulnerable:
 		return
 
-	var actual_damage := maxf(1.0, amount - armor)
+	var actual_damage = maxf(1.0, amount - armor)
 	current_hp -= actual_damage
 	player_damaged.emit(current_hp, max_hp)
 
@@ -185,7 +185,7 @@ func heal(amount: float) -> void:
 
 func collect_xp(amount: int) -> void:
 	current_xp += amount
-	var xp_needed := _xp_for_next_level()
+	var xp_needed = _xp_for_next_level()
 	while current_xp >= xp_needed:
 		current_xp -= xp_needed
 		current_level += 1
@@ -218,19 +218,19 @@ func add_passive(passive_id: String) -> void:
 
 func _recalculate_passive_stats() -> void:
 	# Reset to base
-	var data := CharacterData.get_character(character_id)
+	var data = CharacterData.get_character(character_id)
 	var base: Dictionary = data["base_stats"]
 	var mods: Dictionary = data["stat_modifiers"]
 
 	var base_max_hp: float = base["max_hp"] * mods.get("max_hp", 1.0)
 	cooldown_reduction = 0.0
 	projectile_speed_mult = 1.0
-	var passive_area := 0.0
+	var passive_area = 0.0
 	hp_regen = 0.0
-	var xp_radius_mult := 1.0
+	var xp_radius_mult = 1.0
 	effect_duration_mult = 1.0
-	var luck_bonus := 0.0
-	var armor_bonus := 0.0
+	var luck_bonus = 0.0
+	var armor_bonus = 0.0
 	damage_bonus = 0.0
 
 	for pid in passives:
@@ -273,7 +273,7 @@ func _recalculate_passive_stats() -> void:
 func evolve_weapon(evo_id: String) -> void:
 	var evo = WeaponData.EVOLUTIONS[evo_id]
 	var old_weapon: String = evo["replaces"]
-	var idx := weapons.find(old_weapon)
+	var idx = weapons.find(old_weapon)
 	if idx >= 0:
 		weapons[idx] = evo_id
 		weapon_levels.erase(old_weapon)

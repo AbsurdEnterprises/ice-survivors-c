@@ -2,48 +2,48 @@ extends CharacterBody2D
 
 signal enemy_died(xp_value: int, position: Vector2)
 
-var enemy_class := "fodder_01"
-var max_hp := 10.0
-var current_hp := 10.0
-var move_speed := 40.0
-var contact_damage := 5.0
-var xp_value := 1
-var knockback_immune := false
-var is_active := false
-var is_boss := false
-var boss_id := ""
+var enemy_class = "fodder_01"
+var max_hp = 10.0
+var current_hp = 10.0
+var move_speed = 40.0
+var contact_damage = 5.0
+var xp_value = 1
+var knockback_immune = false
+var is_active = false
+var is_boss = false
+var boss_id = ""
 
 # Behavior
-var behavior := "direct"
+var behavior = "direct"
 var target: Node2D  # Player reference
 
 # Erratic behavior
-var pause_timer := 0.0
-var is_paused := false
+var pause_timer = 0.0
+var is_paused = false
 
 # Orbit behavior (ranged_04)
-var orbit_angle := 0.0
-var orbit_radius := 400.0
-var shoot_timer := 0.0
+var orbit_angle = 0.0
+var orbit_radius = 400.0
+var shoot_timer = 0.0
 
 # Hazard (straight line)
-var hazard_direction := Vector2.RIGHT
-var hazard_lifetime := 0.0
+var hazard_direction = Vector2.RIGHT
+var hazard_lifetime = 0.0
 
 # Boss drone deployer (boss_01)
-var drone_timer := 0.0
-var drone_interval := 4.0
+var drone_timer = 0.0
+var drone_interval = 4.0
 
 # Boss AoE bombarder (boss_02)
-var bombard_timer := 0.0
-var bombard_interval := 3.0
+var bombard_timer = 0.0
+var bombard_interval = 3.0
 
 # Game manager ref (for boss projectile spawning)
 var game_manager_ref: Node
 
 # Knockback
-var knockback_velocity := Vector2.ZERO
-var knockback_decay := 10.0
+var knockback_velocity = Vector2.ZERO
+var knockback_decay = 10.0
 
 # Visual
 @onready var visual: ColorRect = $Visual
@@ -56,8 +56,8 @@ var collision_manager: Node
 var boss_hp_callback: Callable
 
 # Freeze status
-var is_frozen := false
-var freeze_timer := 0.0
+var is_frozen = false
+var freeze_timer = 0.0
 
 func _ready() -> void:
 	set_physics_process(false)
@@ -68,7 +68,7 @@ func activate(data: Dictionary, player_ref: Node2D, time_minutes: float, col_man
 	collision_manager = col_manager
 	game_manager_ref = game_mgr
 
-	var class_data := EnemyData.get_enemy_class(enemy_class)
+	var class_data = EnemyData.get_enemy_class(enemy_class)
 	behavior = class_data["behavior"]
 	knockback_immune = class_data["knockback_immune"]
 	xp_value = class_data["xp_value"]
@@ -87,7 +87,7 @@ func activate(data: Dictionary, player_ref: Node2D, time_minutes: float, col_man
 	visual.visible = true
 
 	# Set collision shape
-	var shape := RectangleShape2D.new()
+	var shape = RectangleShape2D.new()
 	shape.size = size
 	collision_shape.shape = shape
 
@@ -136,7 +136,7 @@ func activate_boss(boss_data: Dictionary, player_ref: Node2D, time_minutes: floa
 	visual.color = bdata["color"]
 	visual.visible = true
 
-	var shape := RectangleShape2D.new()
+	var shape = RectangleShape2D.new()
 	shape.size = size
 	collision_shape.shape = shape
 
@@ -203,7 +203,7 @@ func _physics_process(delta: float) -> void:
 
 	# Check player collision
 	if target and is_instance_valid(target):
-		var dist := global_position.distance_to(target.global_position)
+		var dist = global_position.distance_to(target.global_position)
 		var my_size: float = visual.size.x / 2.0
 		if dist < my_size + 16.0:
 			target.take_damage(contact_damage)
@@ -211,7 +211,7 @@ func _physics_process(delta: float) -> void:
 func _move_direct(delta: float) -> void:
 	if not target or not is_instance_valid(target):
 		return
-	var dir := (target.global_position - global_position).normalized()
+	var dir = (target.global_position - global_position).normalized()
 	velocity = dir * move_speed
 	move_and_slide()
 
@@ -236,8 +236,8 @@ func _move_orbit(delta: float) -> void:
 		return
 
 	# Move toward orbit radius
-	var to_player := target.global_position - global_position
-	var dist := to_player.length()
+	var to_player = target.global_position - global_position
+	var dist = to_player.length()
 
 	if dist > orbit_radius + 50.0:
 		velocity = to_player.normalized() * move_speed
@@ -246,7 +246,7 @@ func _move_orbit(delta: float) -> void:
 	else:
 		# Orbit around player
 		orbit_angle += move_speed / orbit_radius * get_physics_process_delta_time()
-		var target_pos := target.global_position + Vector2(cos(orbit_angle), sin(orbit_angle)) * orbit_radius
+		var target_pos = target.global_position + Vector2(cos(orbit_angle), sin(orbit_angle)) * orbit_radius
 		velocity = (target_pos - global_position).normalized() * move_speed
 
 	move_and_slide()
@@ -275,7 +275,7 @@ func take_damage(amount: float, knockback_dir: Vector2 = Vector2.ZERO, knockback
 	current_hp -= amount
 	# Flash white briefly
 	visual.modulate = Color(2.0, 2.0, 2.0)
-	var tween := create_tween()
+	var tween = create_tween()
 	tween.tween_property(visual, "modulate", Color.WHITE, 0.1)
 
 	# Show damage number

@@ -1,10 +1,10 @@
 extends Camera2D
 
 @export var follow_target: Node2D
-@export var smooth_weight := 0.1
+@export var smooth_weight = 0.1
 
-var is_locked := false
-var lock_position := Vector2.ZERO
+var is_locked = false
+var lock_position = Vector2.ZERO
 
 func _ready() -> void:
 	make_current()
@@ -25,9 +25,9 @@ func unlock() -> void:
 	is_locked = false
 
 func shake(intensity: float = 5.0, duration: float = 0.2) -> void:
-	var tween := create_tween()
-	var original_offset := offset
+	var tween = create_tween()
+	var original_offset = offset
 	for i in int(duration / 0.05):
-		var shake_offset := Vector2(randf_range(-intensity, intensity), randf_range(-intensity, intensity))
+		var shake_offset = Vector2(randf_range(-intensity, intensity), randf_range(-intensity, intensity))
 		tween.tween_property(self, "offset", shake_offset, 0.05)
 	tween.tween_property(self, "offset", original_offset, 0.05)

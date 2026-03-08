@@ -6,8 +6,8 @@ func _load_weapon_data() -> void:
 	super._load_weapon_data()
 
 func fire() -> void:
-	var count := get_projectile_count()
-	var strike_radius := 48.0 * get_area_mult()
+	var count = get_projectile_count()
+	var strike_radius = 48.0 * get_area_mult()
 
 	for i in count:
 		# Find a random enemy to strike
@@ -19,15 +19,15 @@ func fire() -> void:
 		if not is_instance_valid(target):
 			continue
 
-		var strike_pos := target.global_position
-		var dmg := get_damage()
-		var kb := get_knockback()
+		var strike_pos = target.global_position
+		var dmg = get_damage()
+		var kb = get_knockback()
 
 		# Deal AoE damage at strike location
 		var hit_enemies = collision_manager.query_radius(strike_pos, strike_radius, "enemy")
 		for enemy in hit_enemies:
 			if is_instance_valid(enemy) and enemy.has_method("take_damage"):
-				var kb_dir := (enemy.global_position - strike_pos).normalized()
+				var kb_dir = (enemy.global_position - strike_pos).normalized()
 				enemy.take_damage(dmg, kb_dir, kb)
 
 		# Visual: short-lived flash projectile

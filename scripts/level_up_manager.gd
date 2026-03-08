@@ -18,14 +18,14 @@ func show_selection(player: CharacterBody2D) -> void:
 	_clear_options()
 
 	var num_options = 4 if player.current_level > 1 else 3
-	var options := _generate_options(player, num_options)
+	var options = _generate_options(player, num_options)
 	current_options = options
 
 	title_label.text = "LEVEL UP! Choose an upgrade:"
 
 	for i in options.size():
 		var item_id: String = options[i]
-		var btn := Button.new()
+		var btn = Button.new()
 		btn.custom_minimum_size = Vector2(500, 60)
 		btn.text = _get_item_description(item_id, player)
 		btn.pressed.connect(_on_option_pressed.bind(i))
@@ -42,7 +42,7 @@ func _clear_options() -> void:
 func _on_option_pressed(index: int) -> void:
 	if index >= current_options.size():
 		return
-	var item_id := current_options[index]
+	var item_id = current_options[index]
 	visible = false
 	selection_made.emit(item_id)
 
@@ -82,14 +82,14 @@ func _generate_options(player: CharacterBody2D, count: int) -> Array[String]:
 	for _i in count:
 		if candidates.is_empty():
 			break
-		var total_weight := 0.0
+		var total_weight = 0.0
 		for c in candidates:
 			total_weight += c["weight"]
 		if total_weight <= 0:
 			break
 
-		var roll := randf() * total_weight
-		var cumulative := 0.0
+		var roll = randf() * total_weight
+		var cumulative = 0.0
 		for j in candidates.size():
 			cumulative += candidates[j]["weight"]
 			if roll <= cumulative:

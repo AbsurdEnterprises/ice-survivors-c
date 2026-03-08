@@ -1,7 +1,7 @@
 extends Node
 class_name WeaponData
 
-const WEAPONS := {
+const WEAPONS = {
 	"weapon_01": {
 		"type": "melee_sweep", "base_dmg": 15, "cooldown": 1.1, "area": 1.0,
 		"knockback": 80, "projectile_count": 1, "pierce": 999, "max_level": 8,
@@ -54,7 +54,7 @@ const WEAPONS := {
 	},
 }
 
-const PASSIVES := {
+const PASSIVES = {
 	"passive_01": {"stat": "max_hp", "bonus_per_level": 0.10, "max_level": 5, "description": "+10% max HP per level"},
 	"passive_02": {"stat": "cooldown_reduction", "bonus_per_level": 0.08, "max_level": 5, "description": "-8% weapon cooldown per level"},
 	"passive_03": {"stat": "projectile_speed", "bonus_per_level": 0.10, "max_level": 5, "description": "+10% projectile speed per level"},
@@ -67,7 +67,7 @@ const PASSIVES := {
 	"passive_10": {"stat": "damage_bonus", "bonus_per_level": 0.05, "max_level": 5, "description": "+5% global damage per level"},
 }
 
-const EVOLUTIONS := {
+const EVOLUTIONS = {
 	"evo_01": {"requires_weapon": "weapon_01", "requires_passive": "passive_01", "replaces": "weapon_01",
 		"bonus": "crit_lifesteal", "effect": "Deals critical hits, heals 5% of damage dealt"},
 	"evo_02": {"requires_weapon": "weapon_02", "requires_passive": "passive_02", "replaces": "weapon_02",
@@ -100,9 +100,9 @@ static func get_evolution(id: String) -> Dictionary:
 	return EVOLUTIONS[id]
 
 static func calculate_damage(base_dmg: float, weapon_level: int, area_mult: float, luck: float) -> Dictionary:
-	var level_mult := 1.0 + (weapon_level - 1) * 0.25
-	var crit_chance := minf(0.50, 0.05 + luck * 0.01)
-	var is_crit := randf() < crit_chance
-	var crit_mult := 2.0 if is_crit else 1.0
-	var damage := base_dmg * level_mult * area_mult * crit_mult
+	var level_mult = 1.0 + (weapon_level - 1) * 0.25
+	var crit_chance = minf(0.50, 0.05 + luck * 0.01)
+	var is_crit = randf() < crit_chance
+	var crit_mult = 2.0 if is_crit else 1.0
+	var damage = base_dmg * level_mult * area_mult * crit_mult
 	return {"damage": damage, "is_crit": is_crit}

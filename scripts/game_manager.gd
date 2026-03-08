@@ -5,10 +5,10 @@ enum GameState { MENU, PLAYING, PAUSED, LEVEL_UP, GAME_OVER, VICTORY }
 signal state_changed(new_state: GameState)
 signal time_updated(elapsed_minutes: float)
 
-var current_state := GameState.MENU
-var elapsed_time := 0.0  # seconds
-var kill_count := 0
-var gold_earned := 0
+var current_state = GameState.MENU
+var elapsed_time = 0.0  # seconds
+var kill_count = 0
+var gold_earned = 0
 
 # Node references
 var player: CharacterBody2D
@@ -26,32 +26,32 @@ var xp_pool: Node
 
 # Treasure chests
 var chest_scene: PackedScene
-var active_chests := []
+var active_chests = []
 
 # Damage numbers
 var damage_numbers: Node2D
 
 # Background tiles
 var bg_tiles: Node2D
-var tile_size := 256
-var tiles_x := 12
-var tiles_y := 8
-var active_tiles := {}
+var tile_size = 256
+var tiles_x = 12
+var tiles_y = 8
+var active_tiles = {}
 
 # Destructible spawning
 var destructible_scene: PackedScene
-var destructible_spawn_distance := 512.0  # spawn density: 1 per 512x512 area
-var spawned_destructible_cells := {}
+var destructible_spawn_distance = 512.0  # spawn density: 1 per 512x512 area
+var spawned_destructible_cells = {}
 
 # Boss tracking
-var boss_01_spawned := false
-var boss_02_spawned := false
-var boss_final_spawned := false
+var boss_01_spawned = false
+var boss_02_spawned = false
+var boss_final_spawned = false
 
 # Surge tracking
-const SURGE_TIMES := [5.0, 10.0, 15.0, 20.0, 25.0]
-const SURGE_COUNTS := [40, 80, 120, 160, 200]
-var surges_triggered := {}
+const SURGE_TIMES = [5.0, 10.0, 15.0, 20.0, 25.0]
+const SURGE_COUNTS = [40, 80, 120, 160, 200]
+var surges_triggered = {}
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -93,8 +93,8 @@ func _setup_references() -> void:
 	xp_pool.initialize(player)
 
 func _start_game() -> void:
-	var char_id := GameConfig.character_id
-	var meta_stats := GameConfig.meta_stats
+	var char_id = GameConfig.character_id
+	var meta_stats = GameConfig.meta_stats
 	player.initialize(char_id, meta_stats)
 	elapsed_time = 0.0
 	kill_count = 0
@@ -117,7 +117,7 @@ func _physics_process(delta: float) -> void:
 		return
 
 	elapsed_time += delta
-	var elapsed_minutes := elapsed_time / 60.0
+	var elapsed_minutes = elapsed_time / 60.0
 	time_updated.emit(elapsed_minutes)
 
 	# Register player in spatial hash
@@ -154,14 +154,14 @@ func _unhandled_input(event: InputEvent) -> void:
 				_change_state(GameState.PLAYING)
 
 func _update_background() -> void:
-	var cam_pos := camera.global_position
-	var center_tile_x := int(floor(cam_pos.x / tile_size))
-	var center_tile_y := int(floor(cam_pos.y / tile_size))
+	var cam_pos = camera.global_position
+	var center_tile_x = int(floor(cam_pos.x / tile_size))
+	var center_tile_y = int(floor(cam_pos.y / tile_size))
 
-	var needed_tiles := {}
+	var needed_tiles = {}
 	for x in range(center_tile_x - tiles_x / 2, center_tile_x + tiles_x / 2 + 1):
 		for y in range(center_tile_y - tiles_y / 2, center_tile_y + tiles_y / 2 + 1):
-			var key := Vector2i(x, y)
+			var key = Vector2i(x, y)
 			needed_tiles[key] = true
 			if key not in active_tiles:
 				_create_tile(key)
@@ -176,7 +176,7 @@ func _update_background() -> void:
 		active_tiles.erase(key)
 
 func _create_tile(key: Vector2i) -> void:
-	var rect := ColorRect.new()
+	var rect = ColorRect.new()
 	if (key.x + key.y) % 2 == 0:
 		rect.color = Color(0.85, 0.85, 0.85)
 	else:
@@ -187,30 +187,30 @@ func _create_tile(key: Vector2i) -> void:
 	active_tiles[key] = rect
 
 func _spawn_destructibles_around_player() -> void:
-	var cell_size := 512
-	var px := int(floor(player.global_position.x / cell_size))
-	var py := int(floor(player.global_position.y / cell_size))
+	var cell_size = 512
+	var px = int(floor(player.global_position.x / cell_size))
+	var py = int(floor(player.global_position.y / cell_size))
 
 	for x in range(px - 3, px + 4):
 		for y in range(py - 3, py + 4):
-			var key := Vector2i(x, y)
+			var key = Vector2i(x, y)
 			if key in spawned_destructible_cells:
 				continue
 			spawned_destructible_cells[key] = true
 
 			# Use deterministic seed for consistent placement
-			var rng := RandomNumberGenerator.new()
+			var rng = RandomNumberGenerator.new()
 			rng.seed = hash(key)
 			if rng.randf() > 0.6:  # 60% chance to spawn a destructible per cell
 				continue
 
-			var dtype := "destructible_01" if rng.randf() < 0.6 else "destructible_02"
-			var pos := Vector2(
+			var dtype = "destructible_01" if rng.randf() < 0.6 else "destructible_02"
+			var pos = Vector2(
 				x * cell_size + rng.randf_range(64, cell_size - 64),
 				y * cell_size + rng.randf_range(64, cell_size - 64)
 			)
 
-			var destr := destructible_scene.instantiate()
+			var destr = destructible_scene.instantiate()
 			add_child(destr)
 			destr.activate(pos, dtype, collision_manager, self)
 
@@ -253,7 +253,7 @@ func _on_player_died() -> void:
 	_change_state(GameState.GAME_OVER)
 	hud.show_game_over(elapsed_time, kill_count, gold_earned)
 	# Save gold earned this run
-	var meta := MetaProgression.new()
+	var meta = MetaProgression.new()
 	meta.load_data()
 	meta.add_gold(gold_earned)
 
@@ -290,7 +290,7 @@ func on_boss_killed(boss_id: String, boss_position: Vector2) -> void:
 	_spawn_treasure_chest(boss_position)
 
 func _spawn_treasure_chest(pos: Vector2) -> void:
-	var chest := chest_scene.instantiate() as Area2D
+	var chest = chest_scene.instantiate() as Area2D
 	add_child(chest)
 	chest.activate(pos, player)
 	chest.chest_opened.connect(_on_chest_opened)
@@ -298,7 +298,7 @@ func _spawn_treasure_chest(pos: Vector2) -> void:
 
 func _on_chest_opened(p: CharacterBody2D) -> void:
 	# Check for eligible evolutions
-	var eligible_evolutions := _get_eligible_evolutions()
+	var eligible_evolutions = _get_eligible_evolutions()
 
 	if eligible_evolutions.is_empty():
 		# Fallback: gold + heal + invulnerability
@@ -336,7 +336,7 @@ func _get_eligible_evolutions() -> Array[String]:
 			if player.passive_levels.get(req_passive, 0) < 1:
 				continue
 		elif req_passive is Array:
-			var all_met := true
+			var all_met = true
 			for rp in req_passive:
 				if rp not in player.passives or player.passive_levels.get(rp, 0) < 1:
 					all_met = false
@@ -363,7 +363,7 @@ func _show_evolution_selection(evolutions: Array[String]) -> void:
 	for i in evolutions.size():
 		var evo_id: String = evolutions[i]
 		var evo = WeaponData.EVOLUTIONS[evo_id]
-		var btn := Button.new()
+		var btn = Button.new()
 		btn.custom_minimum_size = Vector2(500, 60)
 		btn.text = "%s: %s" % [evo_id, evo["effect"]]
 		btn.pressed.connect(level_up_screen._on_option_pressed.bind(i))
@@ -378,7 +378,7 @@ func spawn_enemy_projectile(from: Vector2, target: Vector2, dmg: float) -> void:
 	var proj = projectile_pool.get_projectile()
 	if not proj:
 		return
-	var dir := (target - from).normalized()
+	var dir = (target - from).normalized()
 	proj.activate({
 		"position": from,
 		"direction": dir,
@@ -394,14 +394,14 @@ func spawn_enemy_projectile(from: Vector2, target: Vector2, dmg: float) -> void:
 	})
 
 func spawn_boss_drones(boss_pos: Vector2, count: int) -> void:
-	var time_minutes := get_elapsed_minutes()
+	var time_minutes = get_elapsed_minutes()
 	for i in count:
 		var drone = enemy_pool.get_enemy()
 		if not drone:
 			return
-		var angle := randf() * TAU
-		var offset := Vector2(cos(angle), sin(angle)) * 50.0
-		var data := {
+		var angle = randf() * TAU
+		var offset = Vector2(cos(angle), sin(angle)) * 50.0
+		var data = {
 			"class_id": "fodder_01",
 			"position": boss_pos + offset,
 		}

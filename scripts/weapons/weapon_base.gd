@@ -5,15 +5,15 @@ var projectile_pool: Node
 var collision_manager: Node
 var game_manager: Node
 
-var weapon_id := ""
-var level := 1
-var cooldown_timer := 0.0
-var base_cooldown := 1.0
-var base_damage := 10.0
-var base_knockback := 10.0
-var base_area := 1.0
-var base_pierce := 1
-var base_projectile_count := 1
+var weapon_id = ""
+var level = 1
+var cooldown_timer = 0.0
+var base_cooldown = 1.0
+var base_damage = 10.0
+var base_knockback = 10.0
+var base_area = 1.0
+var base_pierce = 1
+var base_projectile_count = 1
 
 func initialize(p: CharacterBody2D, proj_pool: Node, col_mgr: Node, game: Node) -> void:
 	player = p
@@ -25,7 +25,7 @@ func initialize(p: CharacterBody2D, proj_pool: Node, col_mgr: Node, game: Node) 
 func _load_weapon_data() -> void:
 	if weapon_id == "":
 		return
-	var data := WeaponData.get_weapon(weapon_id)
+	var data = WeaponData.get_weapon(weapon_id)
 	base_damage = data["base_dmg"]
 	base_cooldown = data["cooldown"]
 	base_knockback = data["knockback"]
@@ -37,7 +37,7 @@ func get_cooldown() -> float:
 	return base_cooldown * (1.0 - player.cooldown_reduction)
 
 func get_damage() -> float:
-	var level_mult := 1.0 + (level - 1) * 0.25
+	var level_mult = 1.0 + (level - 1) * 0.25
 	return base_damage * level_mult * player.damage_mult * (1.0 + player.damage_bonus)
 
 func get_area_mult() -> float:

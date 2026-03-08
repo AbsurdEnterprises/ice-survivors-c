@@ -6,10 +6,10 @@ var collision_manager: Node
 var game_manager: Node
 
 # Active weapon instances
-var active_weapons := {}
+var active_weapons = {}
 
 # Weapon scripts
-var weapon_scripts := {
+var weapon_scripts = {
 	"weapon_01": preload("res://scripts/weapons/weapon_01.gd"),
 	"weapon_02": preload("res://scripts/weapons/weapon_02.gd"),
 	"weapon_03": preload("res://scripts/weapons/weapon_03.gd"),
@@ -50,7 +50,7 @@ func _add_weapon_instance(weapon_id: String) -> void:
 	if weapon_id not in weapon_scripts:
 		return
 
-	var weapon_node := Node.new()
+	var weapon_node = Node.new()
 	weapon_node.set_script(weapon_scripts[weapon_id])
 	weapon_node.name = weapon_id
 	add_child(weapon_node)

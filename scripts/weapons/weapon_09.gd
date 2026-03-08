@@ -6,12 +6,12 @@ func _load_weapon_data() -> void:
 	super._load_weapon_data()
 
 func fire() -> void:
-	var count := get_projectile_count()
+	var count = get_projectile_count()
 
 	for i in count:
-		var angle := randf() * TAU
-		var dir := Vector2(cos(angle), sin(angle))
-		var cam_pos := Vector2.ZERO
+		var angle = randf() * TAU
+		var dir = Vector2(cos(angle), sin(angle))
+		var cam_pos = Vector2.ZERO
 		if game_manager and game_manager.camera:
 			cam_pos = game_manager.camera.global_position
 

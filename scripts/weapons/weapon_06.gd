@@ -6,12 +6,12 @@ func _load_weapon_data() -> void:
 	super._load_weapon_data()
 
 func fire() -> void:
-	var count := get_projectile_count()
-	var pool_radius := 48.0 * get_area_mult()
+	var count = get_projectile_count()
+	var pool_radius = 48.0 * get_area_mult()
 
 	for i in count:
-		var offset := Vector2(randf_range(-250, 250), randf_range(-250, 250))
-		var target_pos := player.global_position + offset
+		var offset = Vector2(randf_range(-250, 250), randf_range(-250, 250))
+		var target_pos = player.global_position + offset
 
 		spawn_projectile({
 			"position": target_pos,

@@ -1,10 +1,10 @@
 extends "res://scripts/weapons/weapon_base.gd"
 # Orbiting Projectiles
 
-var orbit_projectiles := []
-var orbit_angle := 0.0
-var orbit_radius := 100.0
-var orbit_speed := 3.0  # radians per second
+var orbit_projectiles = []
+var orbit_angle = 0.0
+var orbit_radius = 100.0
+var orbit_speed = 3.0  # radians per second
 
 func _load_weapon_data() -> void:
 	weapon_id = "weapon_07"
@@ -15,7 +15,7 @@ func fire() -> void:
 	pass
 
 func update(delta: float) -> void:
-	var count := get_projectile_count()
+	var count = get_projectile_count()
 	orbit_radius = 100.0 * get_area_mult()
 	orbit_angle += orbit_speed * delta
 
@@ -45,8 +45,8 @@ func update(delta: float) -> void:
 
 	# Update positions
 	for i in orbit_projectiles.size():
-		var angle := orbit_angle + (TAU / orbit_projectiles.size()) * i
-		var pos := player.global_position + Vector2(cos(angle), sin(angle)) * orbit_radius
+		var angle = orbit_angle + (TAU / orbit_projectiles.size()) * i
+		var pos = player.global_position + Vector2(cos(angle), sin(angle)) * orbit_radius
 		orbit_projectiles[i].global_position = pos
 
 		# Manual collision check for orbitals
@@ -56,7 +56,7 @@ func update(delta: float) -> void:
 				var eid = enemy.get_instance_id()
 				if eid not in orbit_projectiles[i].hit_enemies:
 					orbit_projectiles[i].hit_enemies[eid] = true
-					var kb_dir := (enemy.global_position - pos).normalized()
+					var kb_dir = (enemy.global_position - pos).normalized()
 					enemy.take_damage(get_damage(), kb_dir, get_knockback())
 
 	# Reset hit tracking periodically (every orbit)

@@ -1,7 +1,7 @@
 extends Node
 class_name CharacterData
 
-const CHARACTERS := {
+const CHARACTERS = {
 	"char_01": {
 		"starting_weapon": "weapon_05",
 		"stat_modifiers": {"max_hp": 1.20, "move_speed": 0.90, "damage": 1.0, "area": 1.0, "armor": 0, "luck": 0},

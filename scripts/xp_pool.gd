@@ -1,10 +1,10 @@
 extends Node
 
-const POOL_SIZE := 300
-const MERGE_THRESHOLD := 200
+const POOL_SIZE = 300
+const MERGE_THRESHOLD = 200
 
 var pool: Array[Area2D] = []
-var active_gems := []
+var active_gems = []
 var gem_scene: PackedScene
 
 var player: CharacterBody2D
@@ -15,7 +15,7 @@ func _ready() -> void:
 
 func _initialize_pool() -> void:
 	for i in POOL_SIZE:
-		var gem := gem_scene.instantiate() as Area2D
+		var gem = gem_scene.instantiate() as Area2D
 		gem.deactivate()
 		add_child(gem)
 		pool.append(gem)
@@ -29,7 +29,7 @@ func spawn_gem(pos: Vector2, xp_value: int) -> void:
 	if active_gems.size() >= MERGE_THRESHOLD:
 		_merge_gems()
 
-	var gem := _get_gem()
+	var gem = _get_gem()
 	if not gem:
 		return
 
@@ -43,7 +43,7 @@ func _get_gem() -> Area2D:
 
 	# Expand pool
 	if pool.size() < 500:
-		var gem := gem_scene.instantiate() as Area2D
+		var gem = gem_scene.instantiate() as Area2D
 		gem.deactivate()
 		add_child(gem)
 		pool.append(gem)
@@ -60,8 +60,8 @@ func _merge_gems() -> void:
 		return
 
 	# Calculate centroid and total XP
-	var centroid := Vector2.ZERO
-	var total_xp := 0
+	var centroid = Vector2.ZERO
+	var total_xp = 0
 	for gem in active_gems:
 		centroid += gem.global_position
 		total_xp += gem.xp_value
@@ -74,7 +74,7 @@ func _merge_gems() -> void:
 	active_gems.clear()
 
 	# Spawn one big gem
-	var mega_gem := _get_gem()
+	var mega_gem = _get_gem()
 	if mega_gem:
 		mega_gem.activate(centroid, total_xp, player)
 		mega_gem.is_mega = true

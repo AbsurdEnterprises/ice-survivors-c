@@ -1,45 +1,45 @@
 extends Area2D
 
-var is_active := false
-var direction := Vector2.ZERO
-var speed := 400.0
-var damage := 10.0
-var knockback := 10.0
-var pierce := 1
-var pierce_count := 0
-var lifetime := 5.0
-var lifetime_timer := 0.0
-var weapon_id := ""
-var is_enemy_projectile := false
+var is_active = false
+var direction = Vector2.ZERO
+var speed = 400.0
+var damage = 10.0
+var knockback = 10.0
+var pierce = 1
+var pierce_count = 0
+var lifetime = 5.0
+var lifetime_timer = 0.0
+var weapon_id = ""
+var is_enemy_projectile = false
 
 # Bouncing
-var is_bouncing := false
-var bounce_rect := Rect2()
+var is_bouncing = false
+var bounce_rect = Rect2()
 
 # Arcing
-var is_arcing := false
-var arc_start := Vector2.ZERO
-var arc_target := Vector2.ZERO
-var arc_height := 100.0
-var arc_progress := 0.0
-var arc_duration := 1.0
+var is_arcing = false
+var arc_start = Vector2.ZERO
+var arc_target = Vector2.ZERO
+var arc_height = 100.0
+var arc_progress = 0.0
+var arc_duration = 1.0
 
 # Ground pool
-var is_pool := false
-var pool_duration := 3.0
-var pool_timer := 0.0
-var pool_damage_timer := 0.0
-var pool_radius := 48.0
+var is_pool = false
+var pool_duration = 3.0
+var pool_timer = 0.0
+var pool_damage_timer = 0.0
+var pool_radius = 48.0
 
 # Visual
-var radius := 6.0
-var color := Color(1.0, 1.0, 0.2)
+var radius = 6.0
+var color = Color(1.0, 1.0, 0.2)
 
 # Collision manager
 var collision_manager: Node
 
 # Enemies already hit (for pierce tracking)
-var hit_enemies := {}
+var hit_enemies = {}
 
 func _ready() -> void:
 	set_physics_process(false)
@@ -85,8 +85,8 @@ func activate(data: Dictionary) -> void:
 		speed = 0.0
 
 	if is_bouncing:
-		var vp_size := Vector2(1280, 720)
-		var cam_pos := data.get("camera_position", Vector2.ZERO)
+		var vp_size = Vector2(1280, 720)
+		var cam_pos = data.get("camera_position", Vector2.ZERO)
 		bounce_rect = Rect2(cam_pos - vp_size, vp_size * 2.0)
 
 	pierce_count = 0
@@ -154,8 +154,8 @@ func _process_arc(delta: float) -> void:
 		return
 
 	# Parabolic interpolation
-	var t := arc_progress
-	var pos := arc_start.lerp(arc_target, t)
+	var t = arc_progress
+	var pos = arc_start.lerp(arc_target, t)
 	pos.y -= arc_height * sin(t * PI)
 	global_position = pos
 
@@ -212,7 +212,7 @@ func _check_collisions() -> void:
 				continue
 
 			hit_enemies[eid] = true
-			var kb_dir := (enemy.global_position - global_position).normalized()
+			var kb_dir = (enemy.global_position - global_position).normalized()
 			enemy.take_damage(damage, kb_dir, knockback)
 			pierce_count += 1
 

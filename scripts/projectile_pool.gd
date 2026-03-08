@@ -1,6 +1,6 @@
 extends Node
 
-const POOL_SIZE := 1000
+const POOL_SIZE = 1000
 
 var pool: Array[Area2D] = []
 var projectile_scene: PackedScene
@@ -11,7 +11,7 @@ func _ready() -> void:
 
 func _initialize_pool() -> void:
 	for i in POOL_SIZE:
-		var proj := projectile_scene.instantiate() as Area2D
+		var proj = projectile_scene.instantiate() as Area2D
 		proj.deactivate()
 		add_child(proj)
 		pool.append(proj)
@@ -23,7 +23,7 @@ func get_projectile() -> Area2D:
 
 	# Expand pool
 	if pool.size() < 2000:
-		var proj := projectile_scene.instantiate() as Area2D
+		var proj = projectile_scene.instantiate() as Area2D
 		proj.deactivate()
 		add_child(proj)
 		pool.append(proj)

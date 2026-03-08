@@ -1,9 +1,9 @@
 extends StaticBody2D
 
-var is_active := false
-var hp := 5.0
-var max_hp := 5.0
-var destructible_type := "destructible_01"
+var is_active = false
+var hp = 5.0
+var max_hp = 5.0
+var destructible_type = "destructible_01"
 
 @onready var visual: ColorRect = $Visual
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
@@ -34,7 +34,7 @@ func activate(pos: Vector2, dtype: String, col_mgr: Node, game: Node) -> void:
 			visual.size = Vector2(24, 24)
 			visual.position = Vector2(-12, -12)
 			visual.color = Color(0.6, 0.5, 0.4)
-			var shape := RectangleShape2D.new()
+			var shape = RectangleShape2D.new()
 			shape.size = Vector2(24, 24)
 			collision_shape.shape = shape
 		"destructible_02":
@@ -43,7 +43,7 @@ func activate(pos: Vector2, dtype: String, col_mgr: Node, game: Node) -> void:
 			visual.size = Vector2(32, 32)
 			visual.position = Vector2(-16, -16)
 			visual.color = Color(0.5, 0.4, 0.3)
-			var shape := RectangleShape2D.new()
+			var shape = RectangleShape2D.new()
 			shape.size = Vector2(32, 32)
 			collision_shape.shape = shape
 
@@ -52,7 +52,7 @@ func take_damage(amount: float) -> void:
 		return
 	hp -= amount
 	visual.modulate = Color(2.0, 2.0, 2.0)
-	var tween := create_tween()
+	var tween = create_tween()
 	tween.tween_property(visual, "modulate", Color.WHITE, 0.1)
 
 	if hp <= 0:
@@ -63,7 +63,7 @@ func take_damage(amount: float) -> void:
 		queue_free()
 
 func _drop_loot() -> void:
-	var roll := randf()
+	var roll = randf()
 
 	match destructible_type:
 		"destructible_01":
@@ -92,7 +92,7 @@ func _drop_loot() -> void:
 func _screen_nuke() -> void:
 	# Destroy all non-boss enemies on screen
 	var cam_pos = game_manager.camera.global_position
-	var vp_half := Vector2(640, 360)
+	var vp_half = Vector2(640, 360)
 	var enemies = game_manager.enemy_pool.get_active_enemies()
 	for enemy in enemies:
 		if not enemy.is_boss and enemy.is_active:
@@ -101,7 +101,7 @@ func _screen_nuke() -> void:
 				enemy.take_damage(99999.0)
 
 	# Flash screen white
-	var flash := ColorRect.new()
+	var flash = ColorRect.new()
 	flash.color = Color(1, 1, 1, 0.8)
 	flash.size = Vector2(1280, 720)
 	flash.position = Vector2.ZERO

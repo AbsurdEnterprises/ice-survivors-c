@@ -2,7 +2,7 @@ extends Area2D
 
 signal chest_opened(player: CharacterBody2D)
 
-var is_active := false
+var is_active = false
 var player: CharacterBody2D
 
 func _ready() -> void:
@@ -34,7 +34,7 @@ func _physics_process(_delta: float) -> void:
 	if not is_active or not player or not is_instance_valid(player):
 		return
 
-	var dist := global_position.distance_to(player.global_position)
+	var dist = global_position.distance_to(player.global_position)
 	if dist < 40.0:
 		chest_opened.emit(player)
 		deactivate()
