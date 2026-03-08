@@ -1,0 +1,89 @@
+[gd_scene load_steps=2 format=3 uid="uid://bhud0000001"]
+
+[ext_resource type="Script" path="res://scripts/hud.gd" id="1_hud"]
+
+[node name="HUD" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_hud")
+
+[node name="HPBar" type="ProgressBar" parent="."]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 320.0
+offset_bottom = 44.0
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="Label" type="Label" parent="HPBar"]
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 24.0
+text = "100 / 100"
+horizontal_alignment = 1
+
+[node name="XPBar" type="ProgressBar" parent="."]
+offset_left = 20.0
+offset_top = 50.0
+offset_right = 320.0
+offset_bottom = 68.0
+max_value = 60.0
+value = 0.0
+show_percentage = false
+
+[node name="Label" type="Label" parent="XPBar"]
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 18.0
+text = "0 / 60"
+horizontal_alignment = 1
+
+[node name="TimerLabel" type="Label" parent="."]
+offset_left = 560.0
+offset_top = 10.0
+offset_right = 720.0
+offset_bottom = 40.0
+text = "00:00"
+horizontal_alignment = 1
+
+[node name="KillLabel" type="Label" parent="."]
+offset_left = 1100.0
+offset_top = 10.0
+offset_right = 1260.0
+offset_bottom = 40.0
+text = "Kills: 0"
+horizontal_alignment = 2
+
+[node name="LevelLabel" type="Label" parent="."]
+offset_left = 330.0
+offset_top = 20.0
+offset_right = 430.0
+offset_bottom = 44.0
+text = "LV 1"
+
+[node name="BossHPBar" type="ProgressBar" parent="."]
+visible = false
+offset_left = 340.0
+offset_top = 680.0
+offset_right = 940.0
+offset_bottom = 700.0
+max_value = 1000.0
+value = 1000.0
+show_percentage = false
+
+[node name="GameOverPanel" type="Panel" parent="."]
+visible = false
+offset_left = 340.0
+offset_top = 160.0
+offset_right = 940.0
+offset_bottom = 560.0
+
+[node name="Label" type="Label" parent="GameOverPanel"]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 50.0
+offset_right = 550.0
+offset_bottom = 350.0
+text = "GAME OVER"
+horizontal_alignment = 1
+vertical_alignment = 1
