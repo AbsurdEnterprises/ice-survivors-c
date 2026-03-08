@@ -1,134 +1,199 @@
 extends Control
 
-const MetaProgressionScript = preload("res://scripts/meta_progression.gd")
-const CharacterDataScript = preload("res://scripts/data/character_data.gd")
+# Completely self-contained menu with NO external script dependencies.
+# All data is inlined to avoid class_name resolution issues.
 
-var meta = null
 var selected_character := "char_02"
 var selected_stage := "stage_01"
+var meta_gold := 0
+var meta_upgrade_levels := {}
+var meta_unlocked_characters := ["char_01", "char_02"]
+var meta_unlocked_stages := ["stage_01"]
 
-@onready var title_label: Label = $Panel/TitleLabel
-@onready var char_container: VBoxContainer = $Panel/CharContainer
-@onready var stage_container: VBoxContainer = $Panel/StageContainer
-@onready var upgrade_container: VBoxContainer = $Panel/UpgradeContainer
-@onready var gold_label: Label = $Panel/GoldLabel
-@onready var play_button: Button = $Panel/PlayButton
+const SAVE_PATH := "user://save.json"
+
+const CHARACTER_INFO := {
+	"char_01": {"name": "Tank", "hp": 120, "spd": 135, "weapon": "weapon_05"},
+	"char_02": {"name": "Mage", "hp": 100, "spd": 150, "weapon": "weapon_02"},
+	"char_03": {"name": "Rogue", "hp": 100, "spd": 172, "weapon": "weapon_01"},
+	"char_04": {"name": "Scout", "hp": 80, "spd": 210, "weapon": "weapon_03"},
+	"char_05": {"name": "Gambler", "hp": 100, "spd": 150, "weapon": "weapon_08"},
+	"char_06": {"name": "Knight", "hp": 100, "spd": 105, "weapon": "weapon_07"},
+}
+
+const UPGRADE_INFO := {
+	"meta_01": {"stat": "armor", "bonus": 1, "max_level": 5, "base_cost": 200},
+	"meta_02": {"stat": "cooldown_reduction", "bonus": 0.03, "max_level": 5, "base_cost": 300},
+	"meta_03": {"stat": "area", "bonus": 0.05, "max_level": 5, "base_cost": 250},
+	"meta_04": {"stat": "revive", "bonus": 1, "max_level": 1, "base_cost": 5000},
+}
 
 func _ready() -> void:
-	print("[MainMenu] _ready() called")
+	print("[MainMenu] _ready called")
+	_load_save()
+	_build_ui()
+	print("[MainMenu] _ready complete")
 
-	# Connect play button FIRST
+func _load_save() -> void:
+	if not FileAccess.file_exists(SAVE_PATH):
+		print("[MainMenu] No save file found, using defaults")
+		return
+	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if not file:
+		return
+	var json := JSON.new()
+	var err := json.parse(file.get_as_text())
+	if err != OK:
+		return
+	var data = json.data
+	if data is Dictionary:
+		meta_gold = data.get("gold", 0)
+		meta_upgrade_levels = data.get("upgrades", {})
+		meta_unlocked_stages = data.get("stages", ["stage_01"])
+		meta_unlocked_characters = data.get("characters", ["char_01", "char_02"])
+	print("[MainMenu] Save loaded, gold: ", meta_gold)
+
+func _build_ui() -> void:
+	# Title
+	var title_label := $Panel/TitleLabel as Label
+	title_label.text = "ICE SURVIVORS"
+
+	# Gold
+	var gold_label := $Panel/GoldLabel as Label
+	gold_label.text = "Gold: %d" % meta_gold
+
+	# Play button - connect FIRST
+	var play_button := $Panel/PlayButton as Button
+	play_button.text = "START RUN"
 	play_button.pressed.connect(_on_play)
 	print("[MainMenu] Play button connected")
 
-	meta = MetaProgressionScript.new()
-	meta.load_data()
-	print("[MainMenu] Meta loaded, gold: ", meta.total_gold)
+	# Characters
+	_build_characters()
 
-	title_label.text = "ICE SURVIVORS"
-	gold_label.text = "Gold: %d" % meta.total_gold
-	play_button.text = "START RUN"
+	# Stages
+	_build_stages()
 
-	_build_character_select()
-	_build_stage_select()
-	_build_upgrade_shop()
-	print("[MainMenu] UI build complete")
+	# Upgrades
+	_build_upgrades()
 
-func _build_character_select() -> void:
-	for child in char_container.get_children():
-		child.queue_free()
+func _build_characters() -> void:
+	var container := $Panel/CharContainer as VBoxContainer
+	# Clear existing children
+	for c in container.get_children():
+		c.queue_free()
 
 	var header := Label.new()
 	header.text = "SELECT CHARACTER"
-	char_container.add_child(header)
+	container.add_child(header)
 
-	var characters: Dictionary = CharacterDataScript.CHARACTERS
-	print("[MainMenu] Building character select, characters: ", characters.keys())
-
-	for char_id in characters:
-		if char_id not in meta.unlocked_characters:
+	for char_id in CHARACTER_INFO:
+		if not (char_id in meta_unlocked_characters):
 			continue
-		var data: Dictionary = characters[char_id]
+		var info: Dictionary = CHARACTER_INFO[char_id]
 		var btn := Button.new()
 		btn.custom_minimum_size = Vector2(200, 40)
-		var base: Dictionary = data["base_stats"]
-		btn.text = "%s (HP:%d SPD:%d)" % [char_id, base["max_hp"], base["move_speed"]]
-		btn.pressed.connect(_on_char_selected.bind(char_id))
-		if char_id == selected_character:
-			btn.text = "> " + btn.text
-		char_container.add_child(btn)
+		var prefix := "> " if char_id == selected_character else ""
+		btn.text = "%s%s (HP:%d SPD:%d)" % [prefix, info["name"], info["hp"], info["spd"]]
+		btn.pressed.connect(_select_character.bind(char_id))
+		container.add_child(btn)
+	print("[MainMenu] Characters built")
 
-func _build_stage_select() -> void:
-	for child in stage_container.get_children():
-		child.queue_free()
+func _build_stages() -> void:
+	var container := $Panel/StageContainer as VBoxContainer
+	for c in container.get_children():
+		c.queue_free()
 
 	var header := Label.new()
 	header.text = "SELECT STAGE"
-	stage_container.add_child(header)
+	container.add_child(header)
 
-	var stages := {
-		"stage_01": "Urban Avenue",
-		"stage_02": "Mall",
-		"stage_03": "Wilderness",
-	}
-
+	var stages := {"stage_01": "Urban Avenue", "stage_02": "Mall", "stage_03": "Wilderness"}
 	for stage_id in stages:
 		var btn := Button.new()
 		btn.custom_minimum_size = Vector2(200, 40)
-		if stage_id in meta.unlocked_stages:
-			btn.text = stages[stage_id]
-			btn.pressed.connect(_on_stage_selected.bind(stage_id))
-		else:
+		var locked: bool = not (stage_id in meta_unlocked_stages)
+		var prefix := "> " if stage_id == selected_stage else ""
+		if locked:
 			btn.text = stages[stage_id] + " (LOCKED)"
 			btn.disabled = true
-		if stage_id == selected_stage:
-			btn.text = "> " + btn.text
-		stage_container.add_child(btn)
+		else:
+			btn.text = prefix + stages[stage_id]
+			btn.pressed.connect(_select_stage.bind(stage_id))
+		container.add_child(btn)
+	print("[MainMenu] Stages built")
 
-func _build_upgrade_shop() -> void:
-	for child in upgrade_container.get_children():
-		child.queue_free()
+func _build_upgrades() -> void:
+	var container := $Panel/UpgradeContainer as VBoxContainer
+	for c in container.get_children():
+		c.queue_free()
 
 	var header := Label.new()
 	header.text = "UPGRADES"
-	upgrade_container.add_child(header)
+	container.add_child(header)
 
-	var upgrades: Dictionary = MetaProgressionScript.META_UPGRADES
-	for uid in upgrades:
-		var data: Dictionary = upgrades[uid]
-		var level: int = meta.upgrade_levels.get(uid, 0)
-		var max_level: int = data["max_level"]
+	for uid in UPGRADE_INFO:
+		var info: Dictionary = UPGRADE_INFO[uid]
+		var level: int = meta_upgrade_levels.get(uid, 0)
+		var max_lvl: int = info["max_level"]
 		var btn := Button.new()
 		btn.custom_minimum_size = Vector2(300, 40)
 
-		if level >= max_level:
-			btn.text = "%s LV %d/%d (MAX)" % [data["stat"], level, max_level]
+		if level >= max_lvl:
+			btn.text = "%s LV %d/%d (MAX)" % [info["stat"], level, max_lvl]
 			btn.disabled = true
 		else:
-			var cost: int = meta.get_upgrade_cost(uid)
-			btn.text = "%s LV %d/%d - Cost: %d gold" % [data["stat"], level, max_level, cost]
-			btn.disabled = not meta.can_purchase(uid)
-			btn.pressed.connect(_on_upgrade_purchased.bind(uid))
+			var cost: int = int(info["base_cost"] * (1.5 * (level + 1)))
+			btn.text = "%s LV %d/%d - Cost: %d" % [info["stat"], level, max_lvl, cost]
+			btn.disabled = meta_gold < cost
+			btn.pressed.connect(_buy_upgrade.bind(uid))
+		container.add_child(btn)
+	print("[MainMenu] Upgrades built")
 
-		upgrade_container.add_child(btn)
-
-func _on_char_selected(char_id: String) -> void:
+func _select_character(char_id: String) -> void:
 	selected_character = char_id
-	_build_character_select()
+	_build_characters()
 
-func _on_stage_selected(stage_id: String) -> void:
+func _select_stage(stage_id: String) -> void:
 	selected_stage = stage_id
-	_build_stage_select()
+	_build_stages()
 
-func _on_upgrade_purchased(uid: String) -> void:
-	if meta.purchase_upgrade(uid):
-		gold_label.text = "Gold: %d" % meta.total_gold
-		_build_upgrade_shop()
+func _buy_upgrade(uid: String) -> void:
+	var info: Dictionary = UPGRADE_INFO[uid]
+	var level: int = meta_upgrade_levels.get(uid, 0)
+	var cost: int = int(info["base_cost"] * (1.5 * (level + 1)))
+	if meta_gold >= cost and level < info["max_level"]:
+		meta_gold -= cost
+		meta_upgrade_levels[uid] = level + 1
+		_save_data()
+		var gold_label := $Panel/GoldLabel as Label
+		gold_label.text = "Gold: %d" % meta_gold
+		_build_upgrades()
+
+func _save_data() -> void:
+	var data := {
+		"gold": meta_gold,
+		"upgrades": meta_upgrade_levels,
+		"stages": meta_unlocked_stages,
+		"characters": meta_unlocked_characters,
+	}
+	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	if file:
+		file.store_string(JSON.stringify(data))
+
+func _get_applied_stats() -> Dictionary:
+	var stats := {}
+	for uid in UPGRADE_INFO:
+		var level: int = meta_upgrade_levels.get(uid, 0)
+		if level > 0:
+			var info: Dictionary = UPGRADE_INFO[uid]
+			stats[info["stat"]] = info["bonus"] * level
+	return stats
 
 func _on_play() -> void:
-	print("[MainMenu] START RUN pressed!")
+	print("[MainMenu] PLAY pressed! Character: ", selected_character, " Stage: ", selected_stage)
 	GameConfig.character_id = selected_character
 	GameConfig.stage_id = selected_stage
-	GameConfig.meta_stats = meta.get_applied_stats()
-	print("[MainMenu] Changing to main scene...")
+	GameConfig.meta_stats = _get_applied_stats()
+	print("[MainMenu] Changing scene to main...")
 	get_tree().change_scene_to_file("res://scenes/main.tscn")
