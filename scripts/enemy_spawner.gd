@@ -140,10 +140,15 @@ func spawn_boss(boss_id: String) -> void:
 		"boss_id": boss_id,
 		"position": spawn_pos,
 		"player_level": game_manager.player.current_level,
+		"game_manager": game_manager,
 	}
 
 	enemy.activate_boss(boss_data, player, time_minutes, collision_manager)
-	enemy.enemy_died.connect(game_manager.on_enemy_killed, CONNECT_ONE_SHOT)
+
+	# Connect boss death to boss-specific handler
+	enemy.enemy_died.connect(func(xp: int, pos: Vector2):
+		game_manager.on_boss_killed(boss_id, pos)
+	, CONNECT_ONE_SHOT)
 
 	# Boss HP callback
 	enemy.boss_hp_callback = Callable(game_manager.hud, "update_boss_hp")

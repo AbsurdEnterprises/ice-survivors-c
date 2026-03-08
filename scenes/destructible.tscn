@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://bdestr00001"]
+
+[ext_resource type="Script" path="res://scripts/destructible.gd" id="1_destr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_destr"]
+size = Vector2(24, 24)
+
+[node name="Destructible" type="StaticBody2D"]
+collision_layer = 32
+collision_mask = 4
+script = ExtResource("1_destr")
+
+[node name="Visual" type="ColorRect" parent="."]
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 12.0
+offset_bottom = 12.0
+color = Color(0.6, 0.5, 0.4, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_destr")

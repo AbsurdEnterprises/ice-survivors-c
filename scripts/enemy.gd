@@ -30,6 +30,17 @@ var shoot_timer := 0.0
 var hazard_direction := Vector2.RIGHT
 var hazard_lifetime := 0.0
 
+# Boss drone deployer (boss_01)
+var drone_timer := 0.0
+var drone_interval := 4.0
+
+# Boss AoE bombarder (boss_02)
+var bombard_timer := 0.0
+var bombard_interval := 3.0
+
+# Game manager ref (for boss projectile spawning)
+var game_manager_ref: Node
+
 # Knockback
 var knockback_velocity := Vector2.ZERO
 var knockback_decay := 10.0
@@ -129,6 +140,11 @@ func activate_boss(boss_data: Dictionary, player_ref: Node2D, time_minutes: floa
 	collision_shape.shape = shape
 
 	global_position = boss_data.get("position", Vector2.ZERO)
+	game_manager_ref = boss_data.get("game_manager", null)
+
+	# Boss-specific setup
+	drone_timer = 4.0
+	bombard_timer = 3.0
 
 	knockback_velocity = Vector2.ZERO
 	is_frozen = false
@@ -166,6 +182,10 @@ func _physics_process(delta: float) -> void:
 		global_position += knockback_velocity * delta
 		knockback_velocity = knockback_velocity.lerp(Vector2.ZERO, knockback_decay * delta)
 
+	# Register as "enemy" type too so weapons can target bosses
+	if collision_manager:
+		collision_manager.register(self, "enemy")
+
 	# Movement based on behavior
 	match behavior:
 		"direct":
@@ -178,8 +198,10 @@ func _physics_process(delta: float) -> void:
 			_move_straight(delta)
 		"drone_deployer":
 			_move_direct(delta)
+			_boss_drone_deployer(delta)
 		"aoe_bombarder":
 			_move_direct(delta)
+			_boss_aoe_bombarder(delta)
 		"death_wall":
 			_move_direct(delta)
 
@@ -277,3 +299,19 @@ func apply_freeze(duration: float) -> void:
 	is_frozen = true
 	freeze_timer = duration
 	visual.modulate = Color(0.5, 0.8, 1.0)
+
+func _boss_drone_deployer(delta: float) -> void:
+	drone_timer -= delta
+	if drone_timer <= 0:
+		drone_timer = drone_interval
+		# Spawn 3 fast mini-drones
+		if game_manager_ref and game_manager_ref.has_method("spawn_boss_drones"):
+			game_manager_ref.spawn_boss_drones(global_position, 3)
+
+func _boss_aoe_bombarder(delta: float) -> void:
+	bombard_timer -= delta
+	if bombard_timer <= 0:
+		bombard_timer = bombard_interval
+		# Fire AoE blast at player
+		if game_manager_ref and game_manager_ref.has_method("spawn_boss_aoe"):
+			game_manager_ref.spawn_boss_aoe(global_position, target.global_position)
